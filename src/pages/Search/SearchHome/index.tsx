@@ -1,12 +1,12 @@
 import { useState } from 'react';
-import { Outlet, useSearchParams } from 'react-router-dom';
+import { Outlet } from 'react-router-dom';
 import { Footer } from '@/shared/components';
 import { Container, Wrapper, HeaderBox, SearchContainer } from './style';
 import { SearchForm } from '@/features/search/components';
+import useGetSearchParams from '@/shared/hooks/useGetSearchParams';
 
 const SearchHome = () => {
-  const [searchParams] = useSearchParams();
-  const searchKeywrod = searchParams.get('keyword');
+  const searchKeywrod = useGetSearchParams('keyword');
 
   const [keyword, setKeyword] = useState<string>(
     searchKeywrod ? decodeURIComponent(searchKeywrod) : ''
