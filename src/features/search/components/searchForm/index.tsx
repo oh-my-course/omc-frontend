@@ -1,9 +1,9 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useEffect } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { CommonInput, CommonIcon, CommonIconButton } from '@/shared/components';
-import { useDebounce } from '../../hooks';
 import { Form } from './style';
+import { useDebounce, useSearchFocus } from '@/features/search/hooks';
 import { searchLocalStorage } from '@/features/search/service';
 
 interface SearchProps {
@@ -14,9 +14,6 @@ interface SearchFormProps {
   keyword: string;
   onInput?: (value: string) => void;
 }
-
-// props가 변경될때마다 다시 변경되는건 수정했다.
-// 해당 form이 수정 중인지 아닌지에 대해서 확인 후 변경하는 로직을 구축한다.
 
 const SearchForm = ({ keyword: currentKeyword, onInput }: SearchFormProps) => {
   const values = { keyword: currentKeyword };
@@ -32,9 +29,7 @@ const SearchForm = ({ keyword: currentKeyword, onInput }: SearchFormProps) => {
 
   const navigate = useNavigate();
 
-  const formRef = useRef<HTMLFormElement | null>(null);
-
-  const [isFocus, setIsFocus] = useState<boolean>(false);
+  const { formRef, isFocus, setIsFocus } = useSearchFocus();
 
   const keyword = useDebounce(watch(['keyword'])[0], 300);
 
@@ -57,23 +52,6 @@ const SearchForm = ({ keyword: currentKeyword, onInput }: SearchFormProps) => {
     onInput && onInput('');
     navigate('/search');
   };
-
-  const handleInputFocusClick = useCallback(
-    (event: MouseEvent) => {
-      if (formRef.current?.contains(event.target as Node) === false && isFocus) {
-        setIsFocus(false);
-      }
-    },
-    [formRef, isFocus]
-  );
-
-  useEffect(() => {
-    document.addEventListener('click', handleInputFocusClick);
-
-    return () => {
-      document.removeEventListener('click', handleInputFocusClick);
-    };
-  }, [handleInputFocusClick]);
 
   useEffect(() => {
     if (currentKeyword !== keyword) {
