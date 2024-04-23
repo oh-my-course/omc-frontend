@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { Outlet } from 'react-router-dom';
 import { Footer } from '@/shared/components';
+import { useGetSearchParams } from '@/shared/hooks';
 import { Container, Wrapper, HeaderBox, SearchContainer } from './style';
 import { SearchForm } from '@/features/search/components';
-import useGetSearchParams from '@/shared/hooks/useGetSearchParams';
 
 const SearchHome = () => {
   const searchKeywrod = useGetSearchParams('keyword');
