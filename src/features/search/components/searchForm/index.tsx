@@ -3,7 +3,7 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { CommonInput, CommonIcon, CommonIconButton } from '@/shared/components';
 import { Form } from './style';
-import { useDebounce, useSearchFocus } from '@/features/search/hooks';
+import { useSearchFocus } from '@/features/search/hooks';
 import { searchLocalStorage } from '@/features/search/service';
 
 interface SearchProps {
@@ -27,11 +27,9 @@ const SearchForm = ({ keyword: currentKeyword, onInput }: SearchFormProps) => {
     values,
   });
 
-  const navigate = useNavigate();
-
   const { formRef, isFocus, setIsFocus } = useSearchFocus();
 
-  const keyword = useDebounce(watch(['keyword'])[0], 300);
+  const navigate = useNavigate();
 
   const { pathname } = useLocation();
 
@@ -54,13 +52,14 @@ const SearchForm = ({ keyword: currentKeyword, onInput }: SearchFormProps) => {
   };
 
   useEffect(() => {
+    const keyword = watch(['keyword'])[0];
     if (currentKeyword !== keyword) {
-      if (pathname.includes('/result')) {
+      if (pathname.includes('/result') && formRef) {
         navigate('/search');
       }
-      onInput && onInput(watch(['keyword'])[0]);
+      onInput && onInput(keyword);
     }
-  }, [currentKeyword, keyword, pathname, navigate, onInput, watch(['keyword'])[0]]);
+  }, [formRef, pathname, navigate, onInput, watch(['keyword']), currentKeyword]);
 
   return (
     <Form isFocus={isFocus} ref={formRef} onSubmit={handleSubmit(onSubmit)}>

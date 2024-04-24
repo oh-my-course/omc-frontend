@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useDeferredValue, useState } from 'react';
 import { Outlet } from 'react-router-dom';
 import { Footer } from '@/shared/components';
 import { useGetSearchParams } from '@/shared/hooks';
@@ -6,11 +6,13 @@ import { Container, Wrapper, HeaderBox, SearchContainer } from './style';
 import { SearchForm } from '@/features/search/components';
 
 const SearchHome = () => {
-  const searchKeywrod = useGetSearchParams('keyword');
+  const searchKeyword = useGetSearchParams('keyword');
 
   const [keyword, setKeyword] = useState<string>(
-    searchKeywrod ? decodeURIComponent(searchKeywrod) : ''
+    searchKeyword ? decodeURIComponent(searchKeyword) : ''
   );
+
+  const lateKeyword = useDeferredValue(keyword);
 
   const onInput = (word: string) => {
     setKeyword(word);
@@ -23,7 +25,7 @@ const SearchHome = () => {
           <HeaderBox />
           <SearchForm keyword={keyword} onInput={onInput} />
           <SearchContainer>
-            <Outlet context={{ keyword, onInput }} />
+            <Outlet context={{ keyword: lateKeyword, onInput }} />
           </SearchContainer>
         </Wrapper>
       </Container>
