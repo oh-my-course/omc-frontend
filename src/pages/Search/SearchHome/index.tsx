@@ -1,4 +1,4 @@
-import { useDeferredValue, useState } from 'react';
+import { Suspense, useDeferredValue, useState } from 'react';
 import { Outlet } from 'react-router-dom';
 import { Footer } from '@/shared/components';
 import { useGetSearchParams } from '@/shared/hooks';
@@ -13,6 +13,7 @@ const SearchHome = () => {
   );
 
   const lateKeyword = useDeferredValue(keyword);
+  // const lateKeyword = useMemo(() => deferredValue, [keyword]);
 
   const onInput = (word: string) => {
     setKeyword(word);
@@ -25,7 +26,9 @@ const SearchHome = () => {
           <HeaderBox />
           <SearchForm keyword={keyword} onInput={onInput} />
           <SearchContainer>
-            <Outlet context={{ keyword: lateKeyword, onInput }} />
+            <Suspense fallback={<>Loading...</>}>
+              <Outlet context={{ keyword: lateKeyword, onInput }} />
+            </Suspense>
           </SearchContainer>
         </Wrapper>
       </Container>

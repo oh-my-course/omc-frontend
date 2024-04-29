@@ -1,7 +1,7 @@
 import { Fragment } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useQuery } from '@tanstack/react-query';
-import { CommonDivider, CommonIcon, CommonSpinner, CommonText } from '@/shared/components';
+import { useSuspenseQuery } from '@tanstack/react-query';
+import { CommonDivider, CommonIcon, CommonText } from '@/shared/components';
 import { WordWrapper, NoResult } from './style';
 import { searchQueryOption, searchLocalStorage } from '@/features/search/service';
 import { SearchListProps } from '@/pages/Search/SearchMain';
@@ -9,7 +9,7 @@ import { SearchListProps } from '@/pages/Search/SearchMain';
 const SearchList = ({ keyword, onInput }: SearchListProps) => {
   const navigate = useNavigate();
 
-  const { data, isPending, isError } = useQuery({
+  const { data } = useSuspenseQuery({
     ...searchQueryOption.keywordList(encodeURIComponent(keyword)),
   });
 
@@ -18,18 +18,6 @@ const SearchList = ({ keyword, onInput }: SearchListProps) => {
     searchLocalStorage(itemName);
     navigate(`result?keyword=${encodeURIComponent(itemName)}`);
   };
-
-  if (isPending) {
-    return (
-      <NoResult>
-        <CommonSpinner size="xl" />
-      </NoResult>
-    );
-  }
-
-  if (isError) {
-    return <NoResult>Error...</NoResult>;
-  }
 
   return (
     <>
