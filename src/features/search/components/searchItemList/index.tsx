@@ -45,7 +45,7 @@ const SearchItemList = ({ keyword }: SearchListItemProp) => {
   return (
     <>
       <Box>
-        <TextBox>
+        <TextBox width={100}>
           <CommonText type="subStrongInfo">총 {data.totalCount[0]}개의 아이템</CommonText>
         </TextBox>
         <Grid padding="0 1rem" templateColumns="repeat(3,1fr)" gap="0.25rem">

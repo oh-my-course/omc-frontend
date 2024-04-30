@@ -11,7 +11,7 @@ import {
 } from '@chakra-ui/react';
 
 interface CommonSkeletonProps {
-  type: 'feed' | 'item' | 'bucket' | 'inProgressVote' | 'vote';
+  type: 'feed' | 'item' | 'bucket' | 'inProgressVote' | 'vote' | 'text';
 }
 
 const CommonSkeleton = ({ type }: CommonSkeletonProps) => {
@@ -89,6 +89,11 @@ const CommonSkeleton = ({ type }: CommonSkeletonProps) => {
             </Stack>
           </Stack>
         </Flex>
+      </Stack>
+    ),
+    text: (
+      <Stack>
+        <Skeleton h="0.8rem" />
       </Stack>
     ),
   };
