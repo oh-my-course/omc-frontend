@@ -1,5 +1,5 @@
 import { useOutletContext } from 'react-router-dom';
-import { Container, Wrapper } from './style';
+import { Container, Wrapper, ListContainer } from './style';
 import { RankList } from '@/features/rank/components';
 import { LatelySearch, SearchList } from '@/features/search/components';
 export interface SearchListProps {
@@ -22,7 +22,9 @@ const SearchMain = () => {
       </Wrapper>
     </Container>
   ) : (
-    <SearchList keyword={keyword} onInput={onInput} />
+    <ListContainer>
+      <SearchList keyword={keyword} onInput={onInput} />
+    </ListContainer>
   );
 };
 

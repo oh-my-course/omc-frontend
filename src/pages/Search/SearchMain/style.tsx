@@ -12,3 +12,8 @@ export const Wrapper = styled.section`
   flex-direction: column;
   gap: 1rem 0;
 `;
+
+export const ListContainer = styled.ul`
+  overflow-y: auto;
+  height: 100%;
+`;
