@@ -59,7 +59,7 @@ const SearchForm = ({ keyword: currentKeyword, onInput }: SearchFormProps) => {
       }
       onInput && onInput(keyword);
     }
-  }, [formRef, pathname, navigate, onInput, watch(['keyword']), currentKeyword]);
+  }, [formRef, pathname, navigate, onInput, watch, currentKeyword]);
 
   return (
     <Form isFocus={isFocus} ref={formRef} onSubmit={handleSubmit(onSubmit)}>
