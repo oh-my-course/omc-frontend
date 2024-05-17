@@ -1,12 +1,11 @@
 import { useNavigate } from 'react-router-dom';
 import { Grid, GridItem } from '@chakra-ui/react';
-import { useInfiniteQuery } from '@tanstack/react-query';
+import { useSuspenseInfiniteQuery } from '@tanstack/react-query';
 import {
   CommonButton,
   CommonDivider,
   CommonIcon,
   CommonImage,
-  CommonSpinner,
   CommonText,
 } from '@/shared/components';
 import { useAuthNavigate, useIntersectionObserver } from '@/shared/hooks';
@@ -20,7 +19,7 @@ export interface SearchListItemProp {
 }
 
 const SearchItemList = ({ keyword }: SearchListItemProp) => {
-  const { data, isPending, isError, hasNextPage, fetchNextPage } = useInfiniteQuery({
+  const { data, hasNextPage, fetchNextPage } = useSuspenseInfiniteQuery({
     ...searchQueryOption.infiniteKeywordItemList({
       keyword: encodeURIComponent(keyword),
       size: 12,
@@ -39,18 +38,6 @@ const SearchItemList = ({ keyword }: SearchListItemProp) => {
 
   const authNavigate = useAuthNavigate();
 
-  if (isPending) {
-    return (
-      <NoResult>
-        <CommonSpinner size="xl" />
-      </NoResult>
-    );
-  }
-
-  if (isError) {
-    return <NoResult>Error...</NoResult>;
-  }
-
   if (data.totalCount[0] === 0) {
     return <NoResult>검색결과가 없습니다.</NoResult>;
   }
@@ -58,7 +45,7 @@ const SearchItemList = ({ keyword }: SearchListItemProp) => {
   return (
     <>
       <Box>
-        <TextBox>
+        <TextBox width={100}>
           <CommonText type="subStrongInfo">총 {data.totalCount[0]}개의 아이템</CommonText>
         </TextBox>
         <Grid padding="0 1rem" templateColumns="repeat(3,1fr)" gap="0.25rem">
