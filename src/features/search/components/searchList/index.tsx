@@ -1,4 +1,3 @@
-import { Fragment } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { CommonDivider, CommonIcon, CommonText } from '@/shared/components';
@@ -23,13 +22,13 @@ const SearchList = ({ keyword, onInput }: SearchListProps) => {
     <>
       {data.itemNameGetResults.length ? (
         data.itemNameGetResults.map(({ itemId, itemName }) => (
-          <Fragment key={itemId}>
+          <li key={itemId}>
             <WordWrapper onClick={() => handleClick(itemName)}>
               <CommonIcon type="search" />
               <CommonText type="normalInfo">{itemName}</CommonText>
             </WordWrapper>
             <CommonDivider size="sm" />
-          </Fragment>
+          </li>
         ))
       ) : (
         <NoResult>검색결과가 없습니다...</NoResult>
