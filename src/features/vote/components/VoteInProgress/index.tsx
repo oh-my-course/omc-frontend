@@ -1,5 +1,5 @@
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { useInfiniteQuery } from '@tanstack/react-query';
+import { useSuspenseInfiniteQuery } from '@tanstack/react-query';
 import { CommonText, DividerImage } from '@/shared/components';
 import { useIntersectionObserver } from '@/shared/hooks';
 import { voteQueryOption } from '../../service';
@@ -13,9 +13,9 @@ const VoteInProgress = () => {
     data: votesInProgressData,
     fetchNextPage,
     hasNextPage,
-  } = useInfiniteQuery({
+  } = useSuspenseInfiniteQuery({
     ...voteQueryOption.list({
-      hobby: getHobby || '',
+      hobby: getHobby || 'baseball',
       status: 'inprogress',
       size: 5,
     }),

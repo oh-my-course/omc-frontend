@@ -1,5 +1,5 @@
 import { useSearchParams } from 'react-router-dom';
-import { useInfiniteQuery } from '@tanstack/react-query';
+import { useSuspenseInfiniteQuery } from '@tanstack/react-query';
 import { useIntersectionObserver } from '@/shared/hooks';
 import { VoteItem } from '..';
 import { GetVotesRequest, voteQueryOption } from '../../service';
@@ -18,9 +18,9 @@ const VoteList = ({ label }: VoteListProps) => {
     data: votesData,
     fetchNextPage,
     hasNextPage,
-  } = useInfiniteQuery({
+  } = useSuspenseInfiniteQuery({
     ...voteQueryOption.list({
-      hobby: getHobby || '',
+      hobby: getHobby || 'baseball',
       status: (getStatus as GetVotesRequest['status']) || 'completed',
       sort: (getSort as GetVotesRequest['sort']) || 'recent',
     }),
