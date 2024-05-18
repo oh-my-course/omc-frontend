@@ -11,18 +11,21 @@ interface VoteListProps {
 
 const VoteList = ({ label }: VoteListProps) => {
   const [searchParams] = useSearchParams();
-  const getHobby = searchParams.get('hobby');
-  const getStatus = searchParams.get('status');
-  const getSort = searchParams.get('sort');
+  const [getHobby, getStatus, getSort] = [
+    searchParams.get('hobby') || 'basketball',
+    searchParams.get('status') || 'completed',
+    searchParams.get('sort') || 'recent',
+  ];
+
   const {
     data: votesData,
     fetchNextPage,
     hasNextPage,
   } = useSuspenseInfiniteQuery({
     ...voteQueryOption.list({
-      hobby: getHobby || 'baseball',
-      status: (getStatus as GetVotesRequest['status']) || 'completed',
-      sort: (getSort as GetVotesRequest['sort']) || 'recent',
+      hobby: getHobby,
+      status: getStatus as GetVotesRequest['status'],
+      sort: getSort as GetVotesRequest['sort'],
     }),
     select: (data) => data?.pages.flatMap(({ votes }) => votes),
   });

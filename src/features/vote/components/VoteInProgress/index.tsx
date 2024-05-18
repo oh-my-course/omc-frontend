@@ -7,15 +7,16 @@ import { Container, TitleWrapper, ContentsWrapper, ContentsBox, NoVotesInProgres
 
 const VoteInProgress = () => {
   const [searchParams] = useSearchParams();
-  const getHobby = searchParams.get('hobby');
+  const getHobby = searchParams.get('hobby') || 'basketball';
   const navigate = useNavigate();
+
   const {
     data: votesInProgressData,
     fetchNextPage,
     hasNextPage,
   } = useSuspenseInfiniteQuery({
     ...voteQueryOption.list({
-      hobby: getHobby || 'baseball',
+      hobby: getHobby,
       status: 'inprogress',
       size: 5,
     }),
