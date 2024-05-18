@@ -1,5 +1,5 @@
 import { Suspense } from 'react';
-import { LoaderFunctionArgs, createBrowserRouter } from 'react-router-dom';
+import { LoaderFunctionArgs, createBrowserRouter, defer } from 'react-router-dom';
 import NotFound from '@/pages/404';
 import App from '@/App';
 import { queryClient } from '@/core/query/QueryClientProvider';
@@ -69,23 +69,25 @@ export const router = createBrowserRouter([
                 searchParams.get('sort') || 'recent',
               ];
 
-              return Promise.all([
-                queryClient.fetchQuery({ ...hobbyQueryOption.all(), staleTime: Infinity }),
-                queryClient.fetchInfiniteQuery({
-                  ...voteQueryOption.list({
-                    hobby: getHobby,
-                    status: getStatus as GetVotesRequest['status'],
-                    sort: getSort as GetVotesRequest['sort'],
+              return defer({
+                data: Promise.all([
+                  queryClient.fetchQuery({ ...hobbyQueryOption.all(), staleTime: Infinity }),
+                  queryClient.fetchInfiniteQuery({
+                    ...voteQueryOption.list({
+                      hobby: getHobby,
+                      status: getStatus as GetVotesRequest['status'],
+                      sort: getSort as GetVotesRequest['sort'],
+                    }),
                   }),
-                }),
-                queryClient.fetchInfiniteQuery({
-                  ...voteQueryOption.list({
-                    hobby: getHobby,
-                    status: 'inprogress',
-                    size: 5,
+                  queryClient.fetchInfiniteQuery({
+                    ...voteQueryOption.list({
+                      hobby: getHobby,
+                      status: 'inprogress',
+                      size: 5,
+                    }),
                   }),
-                }),
-              ]);
+                ]),
+              });
             },
           },
         ],
