@@ -1,4 +1,3 @@
-import { useEffect } from 'react';
 import { Await, useSearchParams } from 'react-router-dom';
 import { CommonTabs } from '@/shared/components';
 import { Container } from './style';
@@ -9,13 +8,7 @@ const VoteHome = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const getHobby = searchParams.get('hobby');
 
-  const { data: hobbyData, isSuccess: hobbySuccess } = useHobby();
-
-  useEffect(() => {
-    if (!searchParams.get('hobby') && hobbySuccess) {
-      setSearchParams({ hobby: hobbyData.hobbies[0].name });
-    }
-  }, [hobbyData?.hobbies, hobbySuccess, searchParams, setSearchParams]);
+  const { data: hobbyData } = useHobby();
 
   const currentTabIndex = hobbyData?.hobbies
     .map(({ name }) => name)
