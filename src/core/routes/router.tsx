@@ -1,3 +1,4 @@
+import { Suspense } from 'react';
 import { createBrowserRouter } from 'react-router-dom';
 import NotFound from '@/pages/404';
 import App from '@/App';
@@ -52,7 +53,11 @@ export const router = createBrowserRouter([
           },
           {
             path: 'vote',
-            element: <VoteHome />,
+            element: (
+              <Suspense fallback={<>Loading...</>}>
+                <VoteHome />
+              </Suspense>
+            ),
           },
         ],
       },
