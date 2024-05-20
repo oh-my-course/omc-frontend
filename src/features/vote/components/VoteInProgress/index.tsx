@@ -1,14 +1,14 @@
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 import { useSuspenseInfiniteQuery } from '@tanstack/react-query';
-import { CommonText, DividerImage } from '@/shared/components';
+import { CommonText } from '@/shared/components';
 import { useIntersectionObserver } from '@/shared/hooks';
-import { voteQueryOption } from '../../service';
-import { Container, TitleWrapper, ContentsWrapper, ContentsBox, NoVotesInProgress } from './style';
+import VoteInProgressItem from '../VoteInProgressItem';
+import { Container, TitleWrapper, ContentsWrapper, NoVotesInProgress } from './style';
+import { voteQueryOption } from '@/features/vote/service';
 
 const VoteInProgress = () => {
   const [searchParams] = useSearchParams();
   const getHobby = searchParams.get('hobby') || 'basketball';
-  const navigate = useNavigate();
 
   const {
     data: votesInProgressData,
@@ -22,35 +22,33 @@ const VoteInProgress = () => {
     }),
     select: (data) => data?.pages.flatMap(({ votes }) => votes),
   });
+
+  const isData = Boolean(votesInProgressData.length !== 0);
+
   const ref = useIntersectionObserver({ onObserve: fetchNextPage });
 
   return (
     <Container>
-      {votesInProgressData?.length !== 0 ? (
-        <>
-          <TitleWrapper>
-            <CommonText type="normalInfo">진행중인 투표</CommonText>
-          </TitleWrapper>
-          <ContentsWrapper>
+      <TitleWrapper>
+        <CommonText type="normalInfo">진행중인 투표</CommonText>
+      </TitleWrapper>
+      <ContentsWrapper>
+        {isData ? (
+          <>
             {votesInProgressData?.map(({ cursorId, item1Info, item2Info, voteInfo }) => {
-              return (
-                <ContentsBox
-                  key={cursorId}
-                  onClick={() => {
-                    navigate(`${voteInfo.id}`);
-                  }}
-                >
-                  <DividerImage type="live" images={[item1Info.image, item2Info.image]} />
-                  <CommonText type="smallInfo">{voteInfo.participants}명 참여중!</CommonText>
-                </ContentsBox>
-              );
+              <VoteInProgressItem
+                cursorId={cursorId}
+                item1Info={item1Info}
+                item2Info={item2Info}
+                voteInfo={voteInfo}
+              />;
             })}
             {hasNextPage && <div ref={ref} />}
-          </ContentsWrapper>
-        </>
-      ) : (
-        <NoVotesInProgress> 진행중인 투표가 없습니다.</NoVotesInProgress>
-      )}
+          </>
+        ) : (
+          <NoVotesInProgress> 진행중인 투표가 없습니다.</NoVotesInProgress>
+        )}
+      </ContentsWrapper>
     </Container>
   );
 };

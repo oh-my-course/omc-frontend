@@ -4,7 +4,9 @@ import {
   TextWrapper,
   InProgressVoteWrapper,
   InProgressVoteContainer,
+  VoteContainer,
   VoteWrapper,
+  VoteTextWrapper,
 } from './style';
 
 const VoteLoading = () => {
@@ -22,11 +24,16 @@ const VoteLoading = () => {
             <CommonSkeleton type="inProgressVote" />
           </InProgressVoteWrapper>
         </InProgressVoteContainer>
-        <VoteWrapper>
-          <CommonSkeleton type="text" />
-          <CommonSkeleton type="vote" />
-          <CommonSkeleton type="vote" />
-        </VoteWrapper>
+        <VoteContainer>
+          <VoteTextWrapper>
+            <CommonSkeleton type="text" />
+          </VoteTextWrapper>
+          <VoteWrapper>
+            <CommonSkeleton type="vote" />
+            <CommonSkeleton type="vote" />
+            <CommonSkeleton type="vote" />
+          </VoteWrapper>
+        </VoteContainer>
       </Container>
     </>
   );
