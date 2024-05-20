@@ -4,6 +4,7 @@ import NotFound from '@/pages/404';
 import App from '@/App';
 import { queryClient } from '@/core/query/QueryClientProvider';
 import { hobbyQueryOption } from '@/features/hobby/service';
+import { VoteLoading } from '@/features/vote/components';
 import { GetVotesRequest, voteQueryOption } from '@/features/vote/service';
 import {
   FeedCreate,
@@ -57,7 +58,7 @@ export const router = createBrowserRouter([
           {
             path: 'vote',
             element: (
-              <Suspense fallback={<>Loading...</>}>
+              <Suspense fallback={<VoteLoading />}>
                 <VoteHome />
               </Suspense>
             ),
