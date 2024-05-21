@@ -1,24 +1,22 @@
-import { LoaderFunctionArgs, defer } from 'react-router-dom';
-import { queryClient } from '@/core/query/QueryClientProvider';
 import { hobbyQueryOption } from '@/features/hobby/service';
-import { GetVotesRequest, voteQueryOption } from '@/features/vote/service';
+import { GetVotesRequest, VoteLoaderProp, voteQueryOption } from '@/features/vote/service';
 
-const VoteLoader = ({ request }: LoaderFunctionArgs) => {
+const VoteLoader = ({ request, queryClient }: VoteLoaderProp) => {
   const { searchParams } = new URL(request.url);
   const [getHobby, getStatus, getSort] = [
     searchParams.get('hobby') || 'basketball',
-    searchParams.get('status') || 'completed',
-    searchParams.get('sort') || 'recent',
+    (searchParams.get('status') || 'completed') as GetVotesRequest['status'],
+    (searchParams.get('sort') || 'recent') as GetVotesRequest['sort'],
   ];
 
-  return defer({
+  return {
     data: Promise.all([
       queryClient.fetchQuery({ ...hobbyQueryOption.all(), staleTime: Infinity }),
       queryClient.fetchInfiniteQuery({
         ...voteQueryOption.list({
           hobby: getHobby,
-          status: getStatus as GetVotesRequest['status'],
-          sort: getSort as GetVotesRequest['sort'],
+          status: getStatus,
+          sort: getSort,
         }),
       }),
       queryClient.fetchInfiniteQuery({
@@ -29,7 +27,8 @@ const VoteLoader = ({ request }: LoaderFunctionArgs) => {
         }),
       }),
     ]),
-  });
+    paramsInfo: { getHobby, getSort, getStatus },
+  };
 };
 
 export default VoteLoader;

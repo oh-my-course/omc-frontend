@@ -1,4 +1,4 @@
-import { Await, useSearchParams } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 import { CommonTabs } from '@/shared/components';
 import { Container } from './style';
 import { useHobby } from '@/features/hobby/hooks';
@@ -15,30 +15,28 @@ const VoteHome = () => {
     .indexOf(getHobby || hobbyData.hobbies[0].name);
 
   return (
-    <Await resolve={hobbyData}>
-      <Container>
-        <CommonTabs
-          currentTabIndex={currentTabIndex}
-          tabsType="soft-rounded"
-          isFitted={false}
-          onClick={(value) => {
-            setSearchParams({ hobby: value });
-          }}
-          tabsData={
-            hobbyData?.hobbies.map(({ name, value }) => ({
-              value: name,
-              label: value,
-              content: (
-                <>
-                  <VoteInProgress />
-                  <Votes />
-                </>
-              ),
-            })) || []
-          }
-        />
-      </Container>
-    </Await>
+    <Container>
+      <CommonTabs
+        currentTabIndex={currentTabIndex}
+        tabsType="soft-rounded"
+        isFitted={false}
+        onClick={(value) => {
+          setSearchParams({ hobby: value });
+        }}
+        tabsData={
+          hobbyData?.hobbies.map(({ name, value }) => ({
+            value: name,
+            label: value,
+            content: (
+              <>
+                <VoteInProgress />
+                <Votes />
+              </>
+            ),
+          })) || []
+        }
+      />
+    </Container>
   );
 };
 
