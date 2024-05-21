@@ -1,8 +1,8 @@
-import { useSearchParams } from 'react-router-dom';
+import { useLoaderData } from 'react-router-dom';
 import { useSuspenseInfiniteQuery } from '@tanstack/react-query';
 import { useIntersectionObserver } from '@/shared/hooks';
 import { VoteItem } from '..';
-import { GetVotesRequest, voteQueryOption } from '../../service';
+import { ParamsInfo, voteQueryOption } from '../../service';
 import { NoResult } from '../Votes/style';
 
 interface VoteListProps {
@@ -10,12 +10,9 @@ interface VoteListProps {
 }
 
 const VoteList = ({ label }: VoteListProps) => {
-  const [searchParams] = useSearchParams();
-  const [getHobby, getStatus, getSort] = [
-    searchParams.get('hobby') || 'basketball',
-    searchParams.get('status') || 'completed',
-    searchParams.get('sort') || 'recent',
-  ];
+  const {
+    paramsInfo: { getStatus, getHobby, getSort },
+  } = useLoaderData() as ParamsInfo;
 
   const {
     data: votesData,
@@ -24,8 +21,8 @@ const VoteList = ({ label }: VoteListProps) => {
   } = useSuspenseInfiniteQuery({
     ...voteQueryOption.list({
       hobby: getHobby,
-      status: getStatus as GetVotesRequest['status'],
-      sort: getSort as GetVotesRequest['sort'],
+      status: getStatus,
+      sort: getSort,
     }),
     select: (data) => data?.pages.flatMap(({ votes }) => votes),
   });

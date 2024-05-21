@@ -1,12 +1,15 @@
-import { useSearchParams } from 'react-router-dom';
+import { useLoaderData, useSearchParams } from 'react-router-dom';
 import { CommonTabs } from '@/shared/components';
 import { Container } from './style';
 import { useHobby } from '@/features/hobby/hooks';
 import { VoteInProgress, Votes } from '@/features/vote/components';
+import { ParamsInfo } from '@/features/vote/service';
 
 const VoteHome = () => {
-  const [searchParams, setSearchParams] = useSearchParams();
-  const getHobby = searchParams.get('hobby');
+  const {
+    paramsInfo: { getHobby },
+  } = useLoaderData() as ParamsInfo;
+  const [, setSearchParams] = useSearchParams();
 
   const { data: hobbyData } = useHobby();
 

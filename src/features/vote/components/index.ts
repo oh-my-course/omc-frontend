@@ -4,3 +4,4 @@ export { default as VoteItem } from './VoteItem';
 export { default as VoteSelectItem } from './VoteSelectItem';
 export { default as Votes } from './Votes';
 export { default as VoteLoading } from './VoteLoading';
+export { default as VoteInProgressItem } from './VoteInProgressItem';
