@@ -1,6 +1,10 @@
+import { Suspense } from 'react';
 import { createBrowserRouter } from 'react-router-dom';
+import { queryClient } from '@/core/query';
 import NotFound from '@/pages/404';
 import App from '@/App';
+import { VoteLoading } from '@/features/vote/components';
+import { VoteLoader } from '@/features/vote/service';
 import {
   FeedCreate,
   FeedDetail,
@@ -52,7 +56,12 @@ export const router = createBrowserRouter([
           },
           {
             path: 'vote',
-            element: <VoteHome />,
+            element: (
+              <Suspense fallback={<VoteLoading />}>
+                <VoteHome />
+              </Suspense>
+            ),
+            loader: ({ request }) => VoteLoader({ request, queryClient }),
           },
         ],
       },

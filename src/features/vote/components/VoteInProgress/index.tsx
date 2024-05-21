@@ -1,49 +1,50 @@
-import { useNavigate, useSearchParams } from 'react-router-dom';
-import { useInfiniteQuery } from '@tanstack/react-query';
-import { CommonText, DividerImage } from '@/shared/components';
+import { useLoaderData } from 'react-router-dom';
+import { useSuspenseInfiniteQuery } from '@tanstack/react-query';
+import { CommonText } from '@/shared/components';
 import { useIntersectionObserver } from '@/shared/hooks';
-import { voteQueryOption } from '../../service';
-import { Container, TitleWrapper, ContentsWrapper, ContentsBox, NoVotesInProgress } from './style';
+import { Container, TitleWrapper, ContentsWrapper, NoVotesInProgress } from './style';
+import { VoteInProgressItem } from '@/features/vote/components';
+import { ParamsInfo, voteQueryOption } from '@/features/vote/service';
 
 const VoteInProgress = () => {
-  const [searchParams] = useSearchParams();
-  const getHobby = searchParams.get('hobby');
-  const navigate = useNavigate();
+  const {
+    paramsInfo: { getHobby },
+  } = useLoaderData() as ParamsInfo;
+
   const {
     data: votesInProgressData,
     fetchNextPage,
     hasNextPage,
-  } = useInfiniteQuery({
+  } = useSuspenseInfiniteQuery({
     ...voteQueryOption.list({
-      hobby: getHobby || '',
+      hobby: getHobby,
       status: 'inprogress',
       size: 5,
     }),
     select: (data) => data?.pages.flatMap(({ votes }) => votes),
   });
+
+  const isData = Boolean(votesInProgressData.length !== 0);
+
   const ref = useIntersectionObserver({ onObserve: fetchNextPage });
 
   return (
     <Container>
-      {votesInProgressData?.length !== 0 ? (
+      {isData ? (
         <>
           <TitleWrapper>
             <CommonText type="normalInfo">진행중인 투표</CommonText>
           </TitleWrapper>
           <ContentsWrapper>
-            {votesInProgressData?.map(({ cursorId, item1Info, item2Info, voteInfo }) => {
-              return (
-                <ContentsBox
-                  key={cursorId}
-                  onClick={() => {
-                    navigate(`${voteInfo.id}`);
-                  }}
-                >
-                  <DividerImage type="live" images={[item1Info.image, item2Info.image]} />
-                  <CommonText type="smallInfo">{voteInfo.participants}명 참여중!</CommonText>
-                </ContentsBox>
-              );
-            })}
+            {votesInProgressData?.map(({ cursorId, item1Info, item2Info, voteInfo }) => (
+              <VoteInProgressItem
+                key={cursorId}
+                cursorId={cursorId}
+                item1Info={item1Info}
+                item2Info={item2Info}
+                voteInfo={voteInfo}
+              />
+            ))}
             {hasNextPage && <div ref={ref} />}
           </ContentsWrapper>
         </>
