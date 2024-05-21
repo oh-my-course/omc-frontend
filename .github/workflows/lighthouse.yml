@@ -1,14 +1,5 @@
 name: Run lighthouse CI When Push
-
-on:
-  push:
-    branches:
-      - dev
-  pull_request:
-    types: [opened, edited, synchronize]
-    branches:
-      - dev
-
+on: [push]
 jobs:
   lhci:
     strategy:
