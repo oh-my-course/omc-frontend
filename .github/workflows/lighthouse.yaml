@@ -40,17 +40,21 @@ jobs:
           script: |
             const fs = require('fs');
             const path = require('path');
+            const core = require('@actions/core');
             const results = JSON.parse(fs.readFileSync(path.join(process.env.GITHUB_WORKSPACE, 'lhci_reports', 'manifest.json')));
             let comments = "";
 
             results.forEach((result) => {
               const { summary, jsonPath } = result;
-              const details = JSON.parse(fs.readFileSync(path.join(process.env.GITHUB_WORKSPACE, jsonPath)));
+              const detailsPath = path.join(process.env.GITHUB_WORKSPACE, 'lhci_reports', jsonPath);
+              const details = JSON.parse(fs.readFileSync(detailsPath));
               const { audits } = details;
+
               const formatResult = (res) => Math.round(res * 100);
               Object.keys(summary).forEach(
                 (key) => (summary[key] = formatResult(summary[key]))
               );
+
               const score = (res) => (res >= 90 ? "🟢" : res >= 50 ? "🟠" : "🔴");
 
               const comment = [
@@ -69,8 +73,10 @@ jobs:
                   audits["first-contentful-paint"].displayValue
                 } |`
               ].join("\n");
+
               comments += comment + "\n" + detail + "\n";
             });
+
             core.setOutput('comments', comments);
 
       - name: Comment PR
