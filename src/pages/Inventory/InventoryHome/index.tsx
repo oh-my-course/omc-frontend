@@ -1,11 +1,11 @@
 import { useNavigate, useParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import { CommonIconButton, CommonText, DividerImage, Header } from '@/shared/components';
+import { CommonIconButton, Header } from '@/shared/components';
 import { useAuthNavigate } from '@/shared/hooks';
-import { formatNumber } from '@/shared/utils';
 import { Storage } from '@/shared/utils';
-import { AddButtonWrapper, Container, Grid, GridItem, TextBox } from './style';
+import { AddButtonWrapper, Container, TextBox } from './style';
 import { inventoryQueryOption } from '@/features/inventory/service';
+import { Item } from '@/features/item/components';
 
 const InventoryHome = () => {
   const authNavigate = useAuthNavigate();
@@ -21,31 +21,26 @@ const InventoryHome = () => {
     <>
       <Header type="back" />
       <Container>
-        <CommonText type="normalTitle">인벤토리</CommonText>
-        <CommonText type="subStrongInfo">
-          총 {inventoryData?.inventoryInfos.length}개의 인벤토리
-        </CommonText>
-        <Grid>
-          {inventoryData?.inventoryInfos.map((inventory, index) => {
-            return (
-              <GridItem
-                key={index}
-                onClick={() => navigate(`/member/${nickname}/inventory/${inventory.inventoryId}`)}
-              >
-                <DividerImage
-                  images={inventory.itemImages.map(({ imgUrl }) => imgUrl)}
-                  type="base"
-                />
-                <TextBox>
-                  <CommonText type="smallInfo">{inventory.hobby}</CommonText>
-                  <CommonText type="smallInfo">
-                    {formatNumber(inventory.inventoryTotalPrice)}
-                  </CommonText>
-                </TextBox>
-              </GridItem>
-            );
-          })}
-        </Grid>
+        <Item>
+          <Item.Header>인벤토리</Item.Header>
+          <Item.CountInfo count={inventoryData?.inventoryInfos.length || 0} />
+          <Item.ImageContainer>
+            {inventoryData?.inventoryInfos.map(
+              ({ inventoryId, itemImages, hobby, inventoryTotalPrice }, index) => (
+                <Item.ImageBox
+                  key={index}
+                  onClick={() => navigate(`/member/${nickname}/inventory/${inventoryId}`)}
+                >
+                  <Item.DividerImage images={itemImages} />
+                  <TextBox>
+                    <Item.Title name={hobby} />
+                    <Item.Price price={inventoryTotalPrice} />
+                  </TextBox>
+                </Item.ImageBox>
+              )
+            )}
+          </Item.ImageContainer>
+        </Item>
       </Container>
       <AddButtonWrapper>
         {isOwner && (

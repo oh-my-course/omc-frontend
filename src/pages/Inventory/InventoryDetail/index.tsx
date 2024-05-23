@@ -1,13 +1,13 @@
 import { useNavigate, useParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import { CommonImage, CommonMenu, CommonText, Header } from '@/shared/components';
+import { CommonMenu, CommonText, Header } from '@/shared/components';
 import { useDrawer } from '@/shared/hooks';
-import { formatNumber } from '@/shared/utils';
 import { Storage } from '@/shared/utils';
-import { Container, ContentWrapper, Grid, GridItem, TitleWrapper } from './style';
+import { Container, ContentWrapper, TitleWrapper } from './style';
 import UpdateInventoryDetail from '@/features/inventory/components/ UpdateInventoryDetail';
 import DeleteInventoryDetail from '@/features/inventory/components/DeleteInventoryDetail';
 import { inventoryQueryOption } from '@/features/inventory/service';
+import { Item } from '@/features/item/components';
 
 const InventoryDetail = () => {
   const { nickname, inventoryId } = useParams() as { nickname: string; inventoryId: string };
@@ -28,25 +28,32 @@ const InventoryDetail = () => {
     <>
       <Header type="back" />
       <Container>
-        <TitleWrapper>
-          <CommonText type="normalTitle">{inventoryDetailData?.hobby} 인벤토리</CommonText>
-          {isOwner && (
-            <CommonMenu type="update" iconSize="0.3rem" onDelete={onDeleteOpen} onUpdate={onOpen} />
-          )}
-        </TitleWrapper>
-        <ContentWrapper>
-          <CommonText type="smallTitle">아이템 전체보기</CommonText>
-          <CommonText type="normalInfo">총 {inventoryDetailData?.itemCount}개의 아이템</CommonText>
-        </ContentWrapper>
-        <Grid>
-          {inventoryDetailData?.inventoryItemInfos.map(({ image, name, price, id }, index) => (
-            <GridItem key={index} onClick={() => navigate(`/item/${id}`)}>
-              <CommonImage size="sm" src={image} />
-              <CommonText type="smallInfo">{name}</CommonText>
-              <CommonText type="smallInfo">{formatNumber(price)}</CommonText>
-            </GridItem>
-          ))}
-        </Grid>
+        <Item>
+          <TitleWrapper>
+            <Item.Header>{inventoryDetailData?.hobby} 인벤토리</Item.Header>
+            {isOwner && (
+              <CommonMenu
+                type="update"
+                iconSize="0.3rem"
+                onDelete={onDeleteOpen}
+                onUpdate={onOpen}
+              />
+            )}
+          </TitleWrapper>
+          <ContentWrapper>
+            <CommonText type="smallTitle">아이템 전체보기</CommonText>
+            <Item.CountInfo count={inventoryDetailData?.itemCount || 0} />
+          </ContentWrapper>
+          <Item.ImageContainer>
+            {inventoryDetailData?.inventoryItemInfos.map(({ image, name, price, id }) => (
+              <Item.ImageBox key={id} onClick={() => navigate(`/item/${id}`)}>
+                <Item.Image src={image} />
+                <Item.Title name={name} />
+                <Item.Price price={price} />
+              </Item.ImageBox>
+            ))}
+          </Item.ImageContainer>
+        </Item>
       </Container>
       <UpdateInventoryDetail
         isOpen={isOpen}
