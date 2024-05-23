@@ -3,7 +3,6 @@ import { useOutletContext } from 'react-router-dom';
 import { CommonSkeleton, CommonTabs } from '@/shared/components';
 import { SearchWrapper, SearchBox } from './style';
 import { SearchItemList, SearchVoteList } from '@/features/search/components';
-import { Box, TextBox } from '@/features/search/components/searchItemList/style';
 import { SearchListProps } from '@/pages/Search/SearchMain';
 
 const TABS = {
@@ -36,16 +35,7 @@ const SearchResult = () => {
             content: (
               <SearchWrapper>
                 <SearchBox>
-                  <Suspense
-                    fallback={
-                      <Box>
-                        <TextBox width={30}>
-                          <CommonSkeleton type="text" />
-                        </TextBox>
-                        <CommonSkeleton type="item" />
-                      </Box>
-                    }
-                  >
+                  <Suspense fallback={<CommonSkeleton type="text" />}>
                     <SearchItemList keyword={keyword} />
                   </Suspense>
                 </SearchBox>
@@ -58,16 +48,7 @@ const SearchResult = () => {
             content: (
               <SearchWrapper>
                 <SearchBox>
-                  <Suspense
-                    fallback={
-                      <Box>
-                        <TextBox width={30}>
-                          <CommonSkeleton type="text" />
-                        </TextBox>
-                        <CommonSkeleton type="item" />
-                      </Box>
-                    }
-                  >
+                  <Suspense fallback={<CommonSkeleton type="text" />}>
                     <SearchVoteList keyword={keyword} />
                   </Suspense>
                 </SearchBox>
