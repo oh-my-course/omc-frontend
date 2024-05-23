@@ -1,11 +1,8 @@
-import { ChangeEvent, Dispatch, SetStateAction, useEffect, useMemo } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { ChangeEvent, Dispatch, SetStateAction } from 'react';
 import { useInfiniteQuery } from '@tanstack/react-query';
-import { CommonButton, CommonIcon, CommonImage, CommonText } from '@/shared/components';
 import { useIntersectionObserver } from '@/shared/hooks';
-import { formatNumber } from '@/shared/utils';
 import { SelectedItem, inventoryQueryOption } from '../../service';
-import { Container, Grid, GridItem, ImageInput, ImageLabel, Wrapper } from './style';
+import { AddItem, Item } from '@/features/item/components';
 
 interface InventorySelectItemProps {
   selectedItems: SelectedItem[];
@@ -20,7 +17,6 @@ const InventorySelectItem = ({
   selectedHobby,
   inventoryId,
 }: InventorySelectItemProps) => {
-  const navigate = useNavigate();
   const { data: myItemsData, fetchNextPage } = useInfiniteQuery({
     ...inventoryQueryOption.myItems({
       hobbyName: selectedHobby,
@@ -38,56 +34,33 @@ const InventorySelectItem = ({
       : onChange(selectedItems.filter(({ id }) => id !== Number(e.target.id)));
   };
 
-  const updatedItems = useMemo(
-    () =>
-      myItemsData
-        ?.filter((item) => item.isSelected)
-        .map((item) => {
-          return { id: item.itemInfo.id, src: item.itemInfo.image };
-        }) || [],
-    [myItemsData]
-  );
-
-  useEffect(() => {
-    onChange(() => updatedItems);
-  }, [onChange, updatedItems]);
-
   const ref = useIntersectionObserver({ onObserve: fetchNextPage });
 
   return (
     <>
-      <Container>
-        <CommonText type="normalTitle">인벤토리 아이템 선택</CommonText>
-        <CommonText type="subStrongInfo">총{myItemsData?.length}개의 아이템</CommonText>
-        <Grid>
-          {myItemsData?.map(({ itemInfo, isSelected }) => (
-            <GridItem key={itemInfo.id}>
-              <ImageInput
-                type="checkbox"
-                id={String(itemInfo.id)}
+      <Item>
+        <Item.Header>인벤토리 아이템 선택</Item.Header>
+        <Item.CountInfo count={myItemsData?.length || 0} />
+        <Item.ImageContainer>
+          {myItemsData?.map(({ itemInfo: { id, image, price, name }, isSelected }) => (
+            <Item.ImageBox key={id}>
+              <Item.ImageInput
+                id={id}
                 defaultChecked={isSelected}
-                onChange={(e) => handleChange(e, itemInfo.image)}
+                onChange={(e) => handleChange(e, image)}
               />
-              <ImageLabel htmlFor={String(itemInfo.id)}>
-                <CommonImage size="sm" src={itemInfo.image} />
-              </ImageLabel>
-              <CommonText type="smallInfo">{formatNumber(itemInfo.price)}</CommonText>
-              <CommonText type="smallInfo">{itemInfo.name}</CommonText>
-            </GridItem>
+              <Item.ImageInputLabel id={id}>
+                <Item.Image src={image} />
+              </Item.ImageInputLabel>
+              <Item.Price price={price} />
+              <Item.Title name={name} limit={15} />
+            </Item.ImageBox>
           ))}
-        </Grid>
+        </Item.ImageContainer>
         <div ref={ref} />
 
-        <div>
-          <CommonText type="smallInfo">원하시는 아이템이 없나요?</CommonText>
-          <Wrapper>
-            <CommonButton type="text" onClick={() => navigate('/item/create')}>
-              아이템 추가하러가기
-            </CommonButton>
-            <CommonIcon type="chevronRight" />
-          </Wrapper>
-        </div>
-      </Container>
+        <AddItem />
+      </Item>
     </>
   );
 };
