@@ -2,7 +2,7 @@ import { ChangeEvent, ReactNode } from 'react';
 import { CommonImage, CommonText, DividerImage } from '@/shared/components';
 import type { ItemImage as ItemImages } from '@/shared/types';
 import { ellipsisName, formatNumber } from '@/shared/utils';
-import { Container, Grid, GridItem, ImageInput, ImageLabel } from './style';
+import { BlurItem, Container, Grid, GridItem, ImageInput, ImageLabel } from './style';
 
 interface ItemCountInfo {
   count: number;
@@ -17,6 +17,8 @@ interface ItemImageInputType {
 interface ItemImageBoxType {
   children: ChildrenType['children'];
   onClick?: () => void;
+  isDelete?: boolean;
+  isDeleteMode?: boolean;
 }
 
 interface ItemDividerImageType {
@@ -61,8 +63,12 @@ const ItemImageContainer = ({ children }: ChildrenType) => {
   return <Grid>{children}</Grid>;
 };
 
-const ItemImageBox = ({ children, onClick }: ItemImageBoxType) => {
-  return <GridItem onClick={onClick}>{children}</GridItem>;
+const ItemImageBox = ({ children, onClick, isDelete, isDeleteMode }: ItemImageBoxType) => {
+  return (
+    <BlurItem isDelete={isDelete} isDeleteMode={isDeleteMode}>
+      <GridItem onClick={onClick}>{children}</GridItem>
+    </BlurItem>
+  );
 };
 
 const ItemDividerImage = ({ images }: ItemDividerImageType) => {

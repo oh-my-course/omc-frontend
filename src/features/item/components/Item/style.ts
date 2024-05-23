@@ -1,6 +1,11 @@
 import styled from '@emotion/styled';
 import { COMMON } from '@/shared/styles/Common';
 
+interface BlurProp {
+  isDelete?: boolean;
+  isDeleteMode?: boolean;
+}
+
 export const Container = styled.main`
   overflow-y: auto;
   display: flex;
@@ -8,13 +13,19 @@ export const Container = styled.main`
   gap: 1rem;
 `;
 
-export const Grid = styled.div`
+export const Grid = styled.ul`
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 0.5rem;
 `;
 
-export const GridItem = styled.div`
+export const BlurItem = styled.li<BlurProp>`
+  filter: ${(props) =>
+    props.isDelete ? (props.isDeleteMode ? 'blur(1px);' : undefined) : undefined};
+  list-style: none;
+`;
+
+export const GridItem = styled.section`
   display: flex;
   flex-direction: column;
   margin-bottom: 0.7rem;
