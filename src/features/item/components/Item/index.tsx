@@ -17,8 +17,7 @@ interface ItemImageInputType {
 interface ItemImageBoxType {
   children: ChildrenType['children'];
   onClick?: () => void;
-  isDelete?: boolean;
-  isDeleteMode?: boolean;
+  isBlur?: boolean;
 }
 
 interface ItemDividerImageType {
@@ -63,9 +62,9 @@ const ItemImageContainer = ({ children }: ChildrenType) => {
   return <Grid>{children}</Grid>;
 };
 
-const ItemImageBox = ({ children, onClick, isDelete, isDeleteMode }: ItemImageBoxType) => {
+const ItemImageBox = ({ children, onClick, isBlur }: ItemImageBoxType) => {
   return (
-    <BlurItem isDelete={isDelete} isDeleteMode={isDeleteMode}>
+    <BlurItem isBlur={isBlur}>
       <GridItem onClick={onClick}>{children}</GridItem>
     </BlurItem>
   );

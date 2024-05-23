@@ -2,8 +2,7 @@ import styled from '@emotion/styled';
 import { COMMON } from '@/shared/styles/Common';
 
 interface BlurProp {
-  isDelete?: boolean;
-  isDeleteMode?: boolean;
+  isBlur?: boolean;
 }
 
 export const Container = styled.main`
@@ -20,8 +19,7 @@ export const Grid = styled.ul`
 `;
 
 export const BlurItem = styled.li<BlurProp>`
-  filter: ${(props) =>
-    props.isDelete ? (props.isDeleteMode ? 'blur(1px);' : undefined) : undefined};
+  filter: ${(props) => (props.isBlur ? 'blur(1px);' : undefined)};
   list-style: none;
 `;
 
