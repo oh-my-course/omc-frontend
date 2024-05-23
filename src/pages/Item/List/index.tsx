@@ -97,7 +97,7 @@ const ItemList = () => {
           </Item.SubCountInfo>
           <Item.ImageContainer>
             {data.summaries.map(({ itemInfo: { id, image, name, price } }) => (
-              <Item.ImageBox key={id} isDelete={isDelete} isDeleteMode={deleteData.includes(id)}>
+              <Item.ImageBox key={id} isBlur={deleteData.includes(id)}>
                 <Item.ImageInput
                   id={id}
                   onChange={isDelete ? () => handleChange(id) : () => handleImageClick(id)}

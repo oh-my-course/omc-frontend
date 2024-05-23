@@ -38,7 +38,12 @@ const VoteSelectItem = ({ selectedItems, onChange, selectedHobby }: VoteSelectIt
       e.target.checked = false;
     }
   };
+
   const ref = useIntersectionObserver({ onObserve: fetchNextPage });
+
+  const isBlur = (id: number) => {
+    return selectedItems.some((item) => item.id === id);
+  };
 
   return (
     <Item>
@@ -46,7 +51,7 @@ const VoteSelectItem = ({ selectedItems, onChange, selectedHobby }: VoteSelectIt
       <Item.CountInfo count={myItemsData?.summaries.length || 0} />
       <Item.ImageContainer>
         {myItemsData?.summaries.map(({ itemInfo: { id, image, price, name } }) => (
-          <Item.ImageBox key={id}>
+          <Item.ImageBox key={id} isBlur={isBlur(id)}>
             <Item.ImageInput id={id} onChange={(e) => handleChange(e, image)} />
             <Item.ImageInputLabel id={id}>
               <Item.Image src={image} />

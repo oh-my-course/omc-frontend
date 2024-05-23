@@ -35,6 +35,9 @@ const InventorySelectItem = ({
   };
 
   const ref = useIntersectionObserver({ onObserve: fetchNextPage });
+  const isBlur = (id: number) => {
+    return selectedItems.some((item) => item.id === id);
+  };
 
   return (
     <>
@@ -43,7 +46,7 @@ const InventorySelectItem = ({
         <Item.CountInfo count={myItemsData?.length || 0} />
         <Item.ImageContainer>
           {myItemsData?.map(({ itemInfo: { id, image, price, name }, isSelected }) => (
-            <Item.ImageBox key={id}>
+            <Item.ImageBox key={id} isBlur={isBlur(id)}>
               <Item.ImageInput
                 id={id}
                 defaultChecked={isSelected}
