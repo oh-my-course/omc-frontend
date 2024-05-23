@@ -42,6 +42,7 @@ const FeedCreate = () => {
     handleSubmit,
     formState: { errors, isSubmitting, isValid },
   } = useForm<Textarea>({ mode: 'onBlur' });
+
   const onSubmit: SubmitHandler<Textarea> = (data) => {
     if (selectedBucket) {
       createFeed.mutate({ bucketId: selectedBucket.id, content: data.textarea });

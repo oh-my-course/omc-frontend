@@ -162,7 +162,11 @@ const BucketCreate = () => {
           isFull={true}
           footerButtonText="선택 완료"
         >
-          <BucketSelectItem hobby={selectedHobby.english} onClick={setSelectedItems} />
+          <BucketSelectItem
+            hobby={selectedHobby.english}
+            onClick={setSelectedItems}
+            selectedItems={selectedItems}
+          />
         </CommonDrawer>
       </Container>
     </>

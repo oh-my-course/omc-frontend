@@ -1,24 +1,10 @@
 import { useNavigate } from 'react-router-dom';
 import { useInfiniteQuery } from '@tanstack/react-query';
-import {
-  CommonButton,
-  CommonDivider,
-  CommonIcon,
-  CommonText,
-  DividerImage,
-} from '@/shared/components';
+import { CommonButton, CommonDivider, CommonIcon, CommonText } from '@/shared/components';
 import { useIntersectionObserver } from '@/shared/hooks';
-import {
-  Container,
-  BucketListWrapper,
-  BucketBox,
-  AddBucketButtonBox,
-  ImageInput,
-  ImageLabel,
-  AddBucketWrapper,
-  TitleWrapper,
-} from './style';
+import { AddBucketButtonBox, AddBucketWrapper } from './style';
 import { bucketQueryOption } from '@/features/bucket/service';
+import { Item } from '@/features/item/components';
 
 interface SelectedBucket {
   id: number;
@@ -48,6 +34,10 @@ const FeedSelectBucket = ({ hobby, nickname, selectedBucket, onClick }: FeedSele
 
   const observedRef = useIntersectionObserver({ onObserve: bucketList.fetchNextPage });
 
+  const isBlur = (id: number) => {
+    return selectedBucket === id;
+  };
+
   if (bucketList.isPending) {
     return;
   }
@@ -56,52 +46,50 @@ const FeedSelectBucket = ({ hobby, nickname, selectedBucket, onClick }: FeedSele
     return;
   }
 
+  if (bucketList.data.pages[0].buckets.length === 0) {
+    return (
+      <>
+        <CommonDivider size="sm" />
+        <AddBucketWrapper>
+          <CommonText type="smallInfo">취미에 맞는 버킷이 없습니다!</CommonText>
+          <AddBucketButtonBox onClick={() => navigate('/bucket/create')}>
+            <CommonButton type="text">버킷 추가하러 가기</CommonButton>
+            <CommonIcon type="chevronRight" />
+          </AddBucketButtonBox>
+        </AddBucketWrapper>
+      </>
+    );
+  }
+
   return (
-    <Container>
-      <TitleWrapper>
-        <CommonText type="normalTitle">버킷 선택하기</CommonText>
-        <CommonText type="subStrongInfo">
-          총 {bucketList.data.pages[0].totalBucketCount}개의 버킷
-        </CommonText>
-      </TitleWrapper>
-      {bucketList.data.pages[0].buckets.length === 0 && (
-        <>
-          <CommonDivider size="sm" />
-          <AddBucketWrapper>
-            <CommonText type="smallInfo">취미에 맞는 버킷이 없습니다!</CommonText>
-            <AddBucketButtonBox onClick={() => navigate('/bucket/create')}>
-              <CommonButton type="text">버킷 추가하러 가기</CommonButton>
-              <CommonIcon type="chevronRight" />
-            </AddBucketButtonBox>
-          </AddBucketWrapper>
-        </>
-      )}
-      <BucketListWrapper>
+    <Item>
+      <Item.Header>버킷 선택하기</Item.Header>
+      <Item.SubCountInfo>총 {bucketList.data.pages[0].totalBucketCount}개의 버킷</Item.SubCountInfo>
+      <Item.ImageContainer>
         {bucketList.data.pages.map((page) =>
-          page.buckets.map((bucket) => (
-            <BucketBox key={bucket.bucketId}>
-              <ImageInput
-                type="checkbox"
-                id={String(bucket.bucketId)}
+          page.buckets.map(({ bucketId, itemImages, name }) => (
+            <Item.ImageBox key={bucketId} isBlur={isBlur(bucketId)}>
+              <Item.ImageInput
+                id={bucketId}
                 onChange={() => {
-                  if (selectedBucket === bucket.bucketId) {
+                  if (selectedBucket === bucketId) {
                     onClick(null);
                   } else {
-                    onClick({ id: bucket.bucketId, images: reduceImgUrl(bucket.itemImages) });
+                    onClick({ id: bucketId, images: reduceImgUrl(itemImages) });
                   }
                 }}
-                checked={selectedBucket === bucket.bucketId}
+                defaultChecked={selectedBucket === bucketId}
               />
-              <ImageLabel htmlFor={String(bucket.bucketId)}>
-                <DividerImage images={reduceImgUrl(bucket.itemImages)} type="base" />
-              </ImageLabel>
-              <CommonText type="smallInfo">{bucket.name}</CommonText>
-            </BucketBox>
+              <Item.ImageInputLabel id={bucketId}>
+                <Item.DividerImage images={itemImages} />
+              </Item.ImageInputLabel>
+              <Item.Title name={name} />
+            </Item.ImageBox>
           ))
         )}
         {bucketList.hasNextPage && <div ref={observedRef} />}
-      </BucketListWrapper>
-    </Container>
+      </Item.ImageContainer>
+    </Item>
   );
 };
 
