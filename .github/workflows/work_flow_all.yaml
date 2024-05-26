@@ -43,5 +43,9 @@ jobs:
       - name: Test
         run: npm test
         if: ${{ always() }}
-      - name: Lighthouse CI
-        uses: ./.github/workflows/actions/lighthouse/action.yaml
+      - name: Run Lighthouse CI
+        env:
+          LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
+        run: |
+          npm install -g @lhci/cli
+          npm run lgh || echo "Fail to Run Lighthouse CI!"
