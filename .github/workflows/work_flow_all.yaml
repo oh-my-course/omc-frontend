@@ -44,4 +44,4 @@ jobs:
         run: npm test
         if: ${{ always() }}
       - name: Lighthouse CI
-        uses: ./actions/lighthouse.yaml
+        uses: ./.github/workflows/actions/lighthouse.yaml
