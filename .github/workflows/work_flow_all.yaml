@@ -40,6 +40,7 @@ jobs:
         run: npm run lint
 
         if: ${{ always() }}
+
       - name: Test
         run: npm test
         if: ${{ always() }}
@@ -48,5 +49,6 @@ jobs:
         env:
           LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
         run: |
+          nvm use
           npm install -g @lhci/cli
           lhci autorun || echo "Fail to Run Lighthouse CI!"
