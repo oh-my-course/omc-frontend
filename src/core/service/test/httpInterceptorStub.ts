@@ -1,5 +1,5 @@
 import { AxiosRequestConfig, AxiosError, isAxiosError } from 'axios';
-import { ERRORCODE, TOKEN_KEY, USER_INFO_KEY } from '@/shared/constants';
+import { ERRORCODE, TOKEN_KEY } from '@/shared/constants';
 import { Storage } from '@/shared/utils';
 import axiosClient from '../axiosClient';
 import type { ResponseData } from '../types';
@@ -41,29 +41,14 @@ export default class TestClient extends axiosClient {
 
         switch (code) {
           case ERRORCODE.COMMON_008: {
-            try {
-              const data = await memberApi.postRefresh();
+            const data = await memberApi.postRefresh();
 
-              if (data !== null && data.accessToken) {
-                config?.headers.set('Authorization', `Bearer ${data.accessToken}`);
-                Storage.setLocalStoraged(TOKEN_KEY, data.accessToken);
-              }
-              // 재요청을 하는게 아니라 return 값만 확인 -> stub 존재이유
-
-              return config;
-            } catch (error) {
-              Storage.removeLocalStoraged(TOKEN_KEY);
-              Storage.removeLocalStoraged(USER_INFO_KEY);
-              window.location.href = '/login';
+            if (data !== null && data.accessToken) {
+              config?.headers.set('Authorization', `Bearer ${data.accessToken}`);
+              Storage.setLocalStoraged(TOKEN_KEY, data.accessToken);
             }
-            break;
-          }
-          case ERRORCODE.COMMON_012:
-          case ERRORCODE.COMMON_013: {
-            Storage.removeLocalStoraged(TOKEN_KEY);
-            Storage.removeLocalStoraged(USER_INFO_KEY);
-            window.location.href = '/login';
-            break;
+
+            return config;
           }
         }
 
@@ -72,9 +57,3 @@ export default class TestClient extends axiosClient {
     );
   }
 }
-
-// export default new TestClient({
-//   baseURL: 'test',
-//   timeout: 15000,
-//   withCredentials: true,
-// });

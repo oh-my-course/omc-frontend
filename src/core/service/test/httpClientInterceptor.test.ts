@@ -24,24 +24,6 @@ jest.mock('@/shared/utils', () => {
   };
 });
 
-// memberApi mock할당
-// 해당 스코프에 있어야지 인식을 한다.
-// stub를 생성하여 mock함수 제거할수 있다.
-
-// jest.mock('@/features/member/service', () => {
-//   const postRefresh = jest.fn(() => {
-//     return new Promise((resolve) => resolve({ data: { accessToken: '123' } }));
-//   });
-
-//   return {
-//     ...jest.requireActual('@/features/member/service'),
-//     memberApi: {
-//       ...jest.requireActual('@/features/member/service/handler'),
-//       postRefresh,
-//     },
-//   };
-// });
-
 describe('axios interceptor에 대한 테스트', () => {
   const http = new TestClient({
     baseURL: 'test',
@@ -64,7 +46,6 @@ describe('axios interceptor에 대한 테스트', () => {
       return [200, config, config];
     });
 
-    // 토큰이 있을때
     const res = await http.get<AxiosRequestConfig>('/test');
     expect(Storage.getLocalStoraged).toHaveBeenCalledTimes(1);
     expect(res.headers!.Authorization).toBe('Bearer accessToken');
