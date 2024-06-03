@@ -1,6 +1,7 @@
-import { useSearchParams } from 'react-router-dom';
+import { useLoaderData, useSearchParams } from 'react-router-dom';
 import { CommonSelect, CommonTabs } from '@/shared/components';
 import { useAuthCheck } from '@/shared/hooks';
+import { ParamsInfo } from '../../service';
 import VoteList from '../VoteList';
 import { Container, ContentsWrapper, NoResult, SelectWrapper } from './style';
 
@@ -20,12 +21,13 @@ const VOTE_STATE = [
 ];
 
 const Votes = () => {
-  const [searchParams, setSearchParams] = useSearchParams();
+  const {
+    paramsInfo: { getStatus, getHobby, getSort },
+  } = useLoaderData() as ParamsInfo;
+  const [, setSearchParams] = useSearchParams();
   const isLogin = useAuthCheck();
 
-  const currentTabIndex = VOTE_STATE.map(({ VALUE }) => VALUE).indexOf(
-    searchParams.get('status') || VOTE_STATE[0].VALUE
-  );
+  const currentTabIndex = VOTE_STATE.map(({ VALUE }) => VALUE).indexOf(getStatus);
   const isLoginInVotes = (value: string) => value !== 'completed' && !isLogin;
 
   return (
@@ -33,7 +35,7 @@ const Votes = () => {
       <CommonTabs
         currentTabIndex={currentTabIndex}
         onClick={(value) => {
-          setSearchParams({ hobby: searchParams.get('hobby') || '', status: value });
+          setSearchParams({ hobby: getHobby, status: value });
         }}
         tabsData={VOTE_STATE.map(({ VALUE, LABEL }) => {
           return {
@@ -44,12 +46,12 @@ const Votes = () => {
                 <SelectWrapper>
                   {VALUE === 'completed' && (
                     <CommonSelect
-                      selectedValue={searchParams.get('sort')?.toLowerCase()}
+                      selectedValue={getSort?.toLowerCase()}
                       onChange={(e) => {
                         const sort = e.target.value;
                         setSearchParams({
-                          hobby: searchParams.get('hobby') || '',
-                          status: searchParams.get('status') || '',
+                          hobby: getHobby,
+                          status: getStatus,
                           sort: sort,
                         });
                       }}

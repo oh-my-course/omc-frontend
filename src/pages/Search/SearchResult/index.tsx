@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { Suspense, useState } from 'react';
 import { useOutletContext } from 'react-router-dom';
-import { CommonTabs } from '@/shared/components';
+import { CommonSkeleton, CommonTabs } from '@/shared/components';
 import { SearchWrapper, SearchBox } from './style';
 import { SearchItemList, SearchVoteList } from '@/features/search/components';
 import { SearchListProps } from '@/pages/Search/SearchMain';
@@ -35,7 +35,9 @@ const SearchResult = () => {
             content: (
               <SearchWrapper>
                 <SearchBox>
-                  <SearchItemList keyword={keyword} />
+                  <Suspense fallback={<CommonSkeleton type="text" />}>
+                    <SearchItemList keyword={keyword} />
+                  </Suspense>
                 </SearchBox>
               </SearchWrapper>
             ),
@@ -46,7 +48,9 @@ const SearchResult = () => {
             content: (
               <SearchWrapper>
                 <SearchBox>
-                  <SearchVoteList keyword={keyword} />
+                  <Suspense fallback={<CommonSkeleton type="text" />}>
+                    <SearchVoteList keyword={keyword} />
+                  </Suspense>
                 </SearchBox>
               </SearchWrapper>
             ),

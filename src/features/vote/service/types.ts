@@ -1,4 +1,7 @@
+import { LoaderFunctionArgs } from 'react-router-dom';
+import { QueryClient } from '@tanstack/react-query';
 import { VoteInfo, VotesInfo } from '@/shared/types';
+import VoteLoader from './loader';
 import { ItemInfo } from '@/shared/types/item';
 
 export interface GetVotesRequest {
@@ -36,4 +39,13 @@ export interface GetVoteDetailResponse {
   voteInfo: VoteInfo;
   isOwner: boolean;
   selectedItemId: number;
+}
+
+export interface VoteLoaderProp {
+  request: LoaderFunctionArgs['request'];
+  queryClient: QueryClient;
+}
+
+export interface ParamsInfo {
+  paramsInfo: ReturnType<typeof VoteLoader>['paramsInfo'];
 }

@@ -1,12 +1,12 @@
 import { useNavigate, useParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import { CommonDrawer, CommonImage, CommonMenu, CommonText, Header } from '@/shared/components';
+import { CommonDrawer, CommonMenu, Header } from '@/shared/components';
 import { useDrawer, useUserInfo } from '@/shared/hooks';
-import { formatNumber } from '@/shared/utils';
-import { Container, ContentsBox, ContentsWrapper, TitlePanel, TitleWrapper } from './style';
+import { Container, TitlePanel, TitleWrapper } from './style';
 import { useDeleteBucket } from '@/features/bucket/hooks';
 import { bucketQueryOption } from '@/features/bucket/service';
 import { hobbyQueryOption } from '@/features/hobby/service';
+import { Item } from '@/features/item/components';
 
 const BucketDetail = () => {
   const { nickname, bucketId } = useParams();
@@ -31,42 +31,41 @@ const BucketDetail = () => {
 
   return (
     <>
-      <Header type="back" />
+      <Header type="back" title={buckDetail.data?.name} />
       <Container>
-        <TitleWrapper>
-          <TitlePanel>
-            <CommonText type="normalTitle">{buckDetail.data?.name}</CommonText>
-            <div>
-              <CommonText type="smallTitle">아이템 전체보기</CommonText>
-              <CommonText type="normalInfo">
-                총 {buckDetail.data?.itemInfos.length || 0}개의 아이템
-              </CommonText>
-            </div>
-          </TitlePanel>
-          {userInfo?.nickname === nickname && (
-            <CommonMenu
-              type="update"
-              iconSize="0.35rem"
-              onDelete={onOpen}
-              onUpdate={() => {
-                if (hobby.isSuccess && buckDetail.isSuccess) {
-                  navigate(`/bucket/${bucketId}/edit?hobby=${hobby.data[buckDetail.data?.hobby]}`);
-                }
-              }}
-            />
+        <Item>
+          <TitleWrapper>
+            <TitlePanel>
+              <Item.Header>아이템 전체보기</Item.Header>
+              <Item.CountInfo count={buckDetail.data?.itemInfos.length || 0} />
+            </TitlePanel>
+            {userInfo?.nickname === nickname && (
+              <CommonMenu
+                type="update"
+                iconSize="0.35rem"
+                onDelete={onOpen}
+                onUpdate={() => {
+                  if (hobby.isSuccess && buckDetail.isSuccess) {
+                    navigate(
+                      `/bucket/${bucketId}/edit?hobby=${hobby.data[buckDetail.data?.hobby]}`
+                    );
+                  }
+                }}
+              />
+            )}
+          </TitleWrapper>
+          {buckDetail.isSuccess && (
+            <Item.ImageContainer>
+              {buckDetail.data.itemInfos.map(({ id, image, name, price }) => (
+                <Item.ImageBox key={id} onClick={() => navigate(`/item/${id}`)}>
+                  <Item.Image src={image} />
+                  <Item.Title name={name} />
+                  <Item.Price price={price} />
+                </Item.ImageBox>
+              ))}
+            </Item.ImageContainer>
           )}
-        </TitleWrapper>
-        {buckDetail.isSuccess && (
-          <ContentsWrapper>
-            {buckDetail.data.itemInfos.map(({ id, image, name, price }) => (
-              <ContentsBox key={id} onClick={() => navigate(`/item/${id}`)}>
-                <CommonImage size="sm" src={image} />
-                <CommonText type="smallInfo">{name}</CommonText>
-                <CommonText type="smallInfo">{formatNumber(price)}</CommonText>
-              </ContentsBox>
-            ))}
-          </ContentsWrapper>
-        )}
+        </Item>
       </Container>
       <CommonDrawer
         isOpen={isOpen}

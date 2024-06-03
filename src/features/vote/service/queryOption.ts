@@ -13,6 +13,7 @@ const voteQueryOption = {
       getNextPageParam: (data) => {
         return data.nextCursorId;
       },
+      staleTime: 1000 * 20,
     }),
   detail: (voteId: number) =>
     queryOptions({

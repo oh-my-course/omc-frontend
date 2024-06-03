@@ -1,17 +1,8 @@
 import { ChangeEvent, Dispatch, SetStateAction } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { useInfiniteQuery } from '@tanstack/react-query';
-import {
-  CommonButton,
-  CommonDivider,
-  CommonIcon,
-  CommonImage,
-  CommonText,
-} from '@/shared/components';
 import { useIntersectionObserver } from '@/shared/hooks';
-import { formatNumber } from '@/shared/utils';
-import { Container, Grid, GridItem, ImageInput, ImageLabel, Wrapper } from './style';
 import { SelectedItem } from '@/features/inventory/service';
+import { AddItem, Item } from '@/features/item/components';
 import { itemQueryOption } from '@/features/item/service';
 
 interface VoteSelectItemProps {
@@ -21,7 +12,6 @@ interface VoteSelectItemProps {
 }
 
 const VoteSelectItem = ({ selectedItems, onChange, selectedHobby }: VoteSelectItemProps) => {
-  const navigate = useNavigate();
   const { data: myItemsData, fetchNextPage } = useInfiniteQuery({
     ...itemQueryOption.infinityList({
       hobbyName: selectedHobby,
@@ -37,9 +27,10 @@ const VoteSelectItem = ({ selectedItems, onChange, selectedHobby }: VoteSelectIt
   });
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>, src: string) => {
+    // 체크 여부에 따라 분기 처리
     const checked = e.target.checked;
     if (checked && selectedItems.length <= 1) {
-      onChange(() => [...selectedItems, { id: Number(e.target.id), src: src }]);
+      onChange((prev) => [...prev, { id: Number(e.target.id), src: src }]);
     } else if (!checked) {
       onChange(selectedItems.filter(({ id }) => id !== Number(e.target.id)));
     }
@@ -50,43 +41,30 @@ const VoteSelectItem = ({ selectedItems, onChange, selectedHobby }: VoteSelectIt
 
   const ref = useIntersectionObserver({ onObserve: fetchNextPage });
 
-  return (
-    <>
-      <Container>
-        <CommonText type="normalTitle">투표 아이템 선택</CommonText>
-        <CommonText type="subStrongInfo">
-          총 {myItemsData?.totalMemberItemCount}개의 아이템
-        </CommonText>
-        <Grid>
-          {myItemsData?.summaries.map(({ itemInfo }) => (
-            <GridItem key={itemInfo.id}>
-              <ImageInput
-                type="checkbox"
-                id={String(itemInfo.id)}
-                onChange={(e) => handleChange(e, itemInfo.image)}
-              />
+  const isBlur = (id: number) => {
+    return selectedItems.some((item) => item.id === id);
+  };
 
-              <ImageLabel htmlFor={String(itemInfo.id)}>
-                <CommonImage size="sm" src={itemInfo.image} />
-              </ImageLabel>
-              <CommonText type="normalInfo">{formatNumber(itemInfo.price)}</CommonText>
-              <CommonText type="smallInfo">{itemInfo.name}</CommonText>
-            </GridItem>
-          ))}
-        </Grid>
-        <div ref={ref} />
-        <CommonDivider size="sm" />
-        <div>
-          <CommonText type="smallInfo">원하시는 아이템이 없나요?</CommonText>
-          <Wrapper>
-            <CommonButton type="text" onClick={() => navigate('/item/create')}>
-              아이템 추가하러가기
-            </CommonButton>
-            <CommonIcon type="chevronRight" />
-          </Wrapper>
-        </div>
-      </Container>
-    </>
+  return (
+    <Item>
+      <Item.Header>인벤토리 아이템 선택</Item.Header>
+      <Item.CountInfo count={myItemsData?.summaries.length || 0} />
+      <Item.ImageContainer>
+        {myItemsData?.summaries.map(({ itemInfo: { id, image, price, name } }) => (
+          <Item.ImageBox key={id} isBlur={isBlur(id)}>
+            <Item.ImageInput id={id} onChange={(e) => handleChange(e, image)} />
+            <Item.ImageInputLabel id={id}>
+              <Item.Image src={image} />
+            </Item.ImageInputLabel>
+            <Item.Price price={price} />
+            <Item.Title name={name} limit={15} />
+          </Item.ImageBox>
+        ))}
+      </Item.ImageContainer>
+      <div ref={ref} />
+
+      <AddItem />
+    </Item>
   );
 };
 

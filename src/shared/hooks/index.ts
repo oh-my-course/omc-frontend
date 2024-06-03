@@ -6,3 +6,4 @@ export { default as useDrawer } from './useDrawer';
 export { default as useUserInfo } from './useUserInfo';
 export { default as useAuthNavigate } from './useAuthNavigate';
 export { default as useIntersectionObserver } from './useIntersectionObserver';
+export { default as useGetSearchParams } from './useGetSearchParams';

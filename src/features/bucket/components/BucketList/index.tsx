@@ -1,10 +1,9 @@
 import { useNavigate } from 'react-router-dom';
 import { useInfiniteQuery } from '@tanstack/react-query';
-import { CommonText, DividerImage } from '@/shared/components';
 import { useIntersectionObserver } from '@/shared/hooks';
-import { formatNumber } from '@/shared/utils';
 import { bucketQueryOption } from '../../service';
-import { BucketBox, BucketWrapper, Container, NoResult, TotalCountWrapper } from './style';
+import { Container, NoResult } from './style';
+import { Item } from '@/features/item/components';
 
 interface BucketListProps {
   nickname: string;
@@ -32,23 +31,21 @@ const BucketList = ({ nickname, hobby }: BucketListProps) => {
 
   return (
     <Container>
-      <TotalCountWrapper>
-        <CommonText type="smallInfo">
-          총 {bucket.data.pages[0].totalBucketCount}개의 버킷
-        </CommonText>
-      </TotalCountWrapper>
-      <BucketWrapper>
-        {bucket.data.pages.map((page) =>
-          page.buckets.map((bucket) => (
-            <BucketBox key={bucket.bucketId} onClick={() => navigate(`./${bucket.bucketId}`)}>
-              <DividerImage type="base" images={bucket.itemImages.map(({ imgUrl }) => imgUrl)} />
-              <CommonText type="smallInfo">{bucket.name}</CommonText>
-              <CommonText type="smallInfo">{formatNumber(bucket.totalPrice)}</CommonText>
-            </BucketBox>
-          ))
-        )}
-        {bucket.hasNextPage && <div ref={observedRef} />}
-      </BucketWrapper>
+      <Item>
+        <Item.SubCountInfo>총 {bucket.data.pages[0].totalBucketCount}개의 버킷</Item.SubCountInfo>
+        <Item.ImageContainer>
+          {bucket.data.pages.map((page) =>
+            page.buckets.map(({ bucketId, itemImages, name, totalPrice }, index) => (
+              <Item.ImageBox key={index} onClick={() => navigate(`./${bucketId}`)}>
+                <Item.DividerImage images={itemImages} />
+                <Item.Title name={name} />
+                <Item.Price price={totalPrice} />
+              </Item.ImageBox>
+            ))
+          )}
+          {bucket.hasNextPage && <div ref={observedRef} />}
+        </Item.ImageContainer>
+      </Item>
     </Container>
   );
 };

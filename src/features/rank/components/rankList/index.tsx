@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query';
+import { useSuspenseQuery } from '@tanstack/react-query';
 import { CommonText } from '@/shared/components';
 import { WrapperTitle, Grid, GridItemList, Item } from './style';
 import { rankQueryOption } from '@/features/rank/service';
@@ -7,26 +7,18 @@ interface RankSearchProp {
   onInput: (word: string) => void;
 }
 
-const RankList = ({ onInput }: RankSearchProp) => {
-  const { data, isPending, isError } = useQuery({ ...rankQueryOption.itemList() });
+const today = new Date().toLocaleDateString('ko-kr', {
+  month: 'long',
+  weekday: 'long',
+  day: 'numeric',
+});
 
-  const today = new Date().toLocaleDateString('ko-kr', {
-    month: 'long',
-    weekday: 'long',
-    day: 'numeric',
-  });
+const RankList = ({ onInput }: RankSearchProp) => {
+  const { data } = useSuspenseQuery({ ...rankQueryOption.itemList() });
 
   const handleClick = (value: string) => {
     onInput(value);
   };
-
-  if (isPending) {
-    return;
-  }
-
-  if (isError) {
-    return;
-  }
 
   return (
     <>

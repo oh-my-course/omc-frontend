@@ -1,12 +1,11 @@
 import { useNavigate } from 'react-router-dom';
-import { useInfiniteQuery } from '@tanstack/react-query';
+import { useSuspenseInfiniteQuery } from '@tanstack/react-query';
 import {
   CommonButton,
   CommonCard,
   CommonDivider,
   CommonIcon,
   CommonImage,
-  CommonSpinner,
   CommonText,
 } from '@/shared/components';
 import { useAuthNavigate, useIntersectionObserver } from '@/shared/hooks';
@@ -26,7 +25,7 @@ import {
 import { searchQueryOption } from '@/features/search/service';
 
 const SearchVoteList = ({ keyword }: SearchListItemProp) => {
-  const { data, isPending, isError, hasNextPage, fetchNextPage } = useInfiniteQuery({
+  const { data, hasNextPage, fetchNextPage } = useSuspenseInfiniteQuery({
     ...searchQueryOption.infiniteVoteList({ keyword: encodeURIComponent(keyword), size: 12 }),
     select: (data) => {
       return {
@@ -41,18 +40,6 @@ const SearchVoteList = ({ keyword }: SearchListItemProp) => {
   const navigate = useNavigate();
 
   const ref = useIntersectionObserver({ onObserve: fetchNextPage });
-
-  if (isPending) {
-    return (
-      <NoResult>
-        <CommonSpinner size="xl" />
-      </NoResult>
-    );
-  }
-
-  if (isError) {
-    return <NoResult>Error...</NoResult>;
-  }
 
   if (data.totalCount === 0) {
     return <NoResult>검색결과가 없습니다...</NoResult>;

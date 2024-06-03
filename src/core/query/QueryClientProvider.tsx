@@ -1,18 +1,7 @@
 import { PropsWithChildren } from 'react';
-import { QueryClient, QueryClientProvider as BaseQueryClientProvider } from '@tanstack/react-query';
+import { QueryClientProvider as BaseQueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
-
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      retry: 0,
-      refetchOnWindowFocus: false,
-    },
-    mutations: {
-      retry: 0,
-    },
-  },
-});
+import { queryClient } from './';
 
 const QueryClientProvider = (props: PropsWithChildren<unknown>) => {
   const { children } = props;

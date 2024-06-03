@@ -1,19 +1,17 @@
-import { useEffect } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useLoaderData, useSearchParams } from 'react-router-dom';
 import { CommonTabs } from '@/shared/components';
 import { Container } from './style';
 import { useHobby } from '@/features/hobby/hooks';
 import { VoteInProgress, Votes } from '@/features/vote/components';
-const VoteHome = () => {
-  const [searchParams, setSearchParams] = useSearchParams();
-  const getHobby = searchParams.get('hobby');
-  const { data: hobbyData, isSuccess: hobbySuccess } = useHobby();
+import { ParamsInfo } from '@/features/vote/service';
 
-  useEffect(() => {
-    if (!searchParams.get('hobby') && hobbySuccess) {
-      setSearchParams({ hobby: hobbyData.hobbies[0].name });
-    }
-  }, [hobbyData?.hobbies, hobbySuccess, searchParams, setSearchParams]);
+const VoteHome = () => {
+  const {
+    paramsInfo: { getHobby },
+  } = useLoaderData() as ParamsInfo;
+  const [, setSearchParams] = useSearchParams();
+
+  const { data: hobbyData } = useHobby();
 
   const currentTabIndex = hobbyData?.hobbies
     .map(({ name }) => name)
