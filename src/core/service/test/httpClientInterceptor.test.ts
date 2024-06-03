@@ -1,24 +1,24 @@
 import { AxiosRequestConfig } from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import { Storage } from '@/shared/utils';
+import memberApi from './handler.ts';
 import TestClient from './httpInterceptorStub.ts';
-
 interface obj {
   [key: string]: string;
 }
 
 jest.mock('@/shared/utils', () => {
+  const storage: obj = {
+    accessToken: 'accessToken',
+  };
+
   return {
     ...jest.requireActual('@/shared/utils'),
     Storage: {
       getLocalStoraged: jest.fn((key: string) => {
-        const storage: obj = {
-          accessToken: 'accessToken',
-        };
-
         return storage[key] !== undefined ? storage[key] : '';
       }),
-      setLocalStoraged: jest.fn((key: string, value: string) => ({ key, value })),
+      setLocalStoraged: jest.fn((key: string, value: string) => (storage[key] = value)),
       removeLocalStoraged: jest.fn((key: string) => key),
     },
   };
@@ -48,22 +48,17 @@ describe('axios interceptor에 대한 테스트', () => {
 
     const res = await http.get<AxiosRequestConfig>('/test');
     expect(Storage.getLocalStoraged).toHaveBeenCalledTimes(1);
-    expect(res.headers!.Authorization).toBe('Bearer accessToken');
+    expect(res.headers!.Authorization).toBe(`Bearer ${Storage.getLocalStoraged('accessToken')}`);
   });
-
-  // stub 존재 이유
-  // 재요청을 보내면 끝나질 않는다
-  // 항상 에러가 터지기 때문에
-  // 이거를 극복하기 위해서는 한번 보내면 에러가 터지지 않도록 설정을 해줘야한다.
 
   it('axios response interceptor error refresh success', async () => {
     const errorBody = { code: 'COMMON_008' };
+    const token = await memberApi.postRefresh();
     mock.onGet('/test-error').reply((config) => {
-      return [500, errorBody, config];
+      return [400, errorBody, config];
     });
-
-    const res = await http.get<AxiosRequestConfig>('/test-error');
+    await http.get<AxiosRequestConfig>('/test-error');
     expect(Storage.setLocalStoraged).toHaveBeenCalledTimes(1);
-    expect(res!.headers?.Authorization).toBe(`Bearer 123`);
+    expect(Storage.getLocalStoraged('accessToken')).toBe(`${token.accessToken}`);
   });
 });

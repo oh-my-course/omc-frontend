@@ -16,7 +16,7 @@ export default class axiosClient {
   public async get<T>(url: string, config?: AxiosRequestConfig) {
     const response = await this.http.get<T>(url, config);
 
-    return response.data || response;
+    return response.data;
   }
 
   public async post<T, P = null>(url: string, body?: P, config?: AxiosRequestConfig) {
