@@ -9,7 +9,7 @@
     "preview": "vite preview",
     "prepare": "husky install",
     "test": "jest --passWithNoTests",
-    "lgh": "nvm use && npm run build && lhci autorun"
+    "lgh": "npm run build && lhci autorun"
   },
   "dependencies": {
     "@chakra-ui/react": "^2.8.1",
