@@ -1,6 +1,6 @@
-import { ChangeEvent, ReactNode } from 'react';
+import { ChangeEvent } from 'react';
 import { CommonImage, CommonText, DividerImage } from '@/shared/components';
-import type { ItemImage as ItemImages } from '@/shared/types';
+import type { ItemImage as ItemImages, ChildrenType } from '@/shared/types';
 import { ellipsisName, formatNumber } from '@/shared/utils';
 import { BlurItem, Container, Grid, GridItem, ImageInput, ImageLabel } from './style';
 
@@ -36,10 +36,6 @@ interface ItemPriceType {
 interface ItemTitleType {
   name: string;
   limit?: number;
-}
-
-interface ChildrenType {
-  children: ReactNode;
 }
 
 const ItemContainer = ({ children }: ChildrenType) => {

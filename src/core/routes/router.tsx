@@ -1,9 +1,6 @@
-import { Suspense } from 'react';
 import { createBrowserRouter } from 'react-router-dom';
 import { queryClient } from '@/core/query';
-import NotFound from '@/pages/404';
 import App from '@/App';
-import { VoteLoading } from '@/features/vote/components';
 import { VoteLoader } from '@/features/vote/service';
 import {
   FeedCreate,
@@ -35,6 +32,7 @@ import {
   BucketDetail,
   BucketUpdate,
   FeedMember,
+  NotFound,
 } from '@/pages';
 
 export const router = createBrowserRouter([
@@ -47,20 +45,12 @@ export const router = createBrowserRouter([
         element: <Home />,
         children: [
           {
-            path: '',
-            element: <FeedHome />,
-          },
-          {
             path: 'feed',
             element: <FeedHome />,
           },
           {
             path: 'vote',
-            element: (
-              <Suspense fallback={<VoteLoading />}>
-                <VoteHome />
-              </Suspense>
-            ),
+            element: <VoteHome />,
             loader: ({ request }) => VoteLoader({ request, queryClient }),
           },
         ],
@@ -89,7 +79,10 @@ export const router = createBrowserRouter([
         path: 'search',
         element: <SearchHome />,
         children: [
-          { path: '', element: <SearchMain /> },
+          {
+            path: '',
+            element: <SearchMain />,
+          },
           {
             path: 'result',
             element: <SearchResult />,
