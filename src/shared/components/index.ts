@@ -24,3 +24,5 @@ export { default as CommonTextarea } from './Textarea';
 export { default as CommonToast } from './Toast';
 export { default as DividerImage } from './DividerImage';
 export { default as CommonSpinner } from './Spinner';
+export { default as ErrorElement } from './ErrorElement';
+export { default as Wrapper } from './Wrapper';
