@@ -1,6 +1,5 @@
 import { Suspense } from 'react';
-import { ErrorBoundary } from 'react-error-boundary';
-import { CommonSpinner, ErrorElement } from '@/shared/components';
+import { CommonSpinner, ErrorElement, ErrorBoundary } from '@/shared/components';
 import type { ChildrenType } from '@/shared/types';
 import { Center } from './style';
 
@@ -8,7 +7,7 @@ interface WrapperProps extends ChildrenType {
   suspenseFallback?: ChildrenType['children'];
 }
 
-const Wrapper = ({
+const SuspenseBoundary = ({
   children,
   suspenseFallback = (
     <Center>
@@ -23,4 +22,4 @@ const Wrapper = ({
   );
 };
 
-export default Wrapper;
+export default SuspenseBoundary;

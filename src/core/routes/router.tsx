@@ -1,6 +1,6 @@
 import { createBrowserRouter } from 'react-router-dom';
 import { queryClient } from '@/core/query';
-import { Wrapper, Skeleton } from '@/shared/components';
+import { SuspenseBoundary, Skeleton } from '@/shared/components';
 import App from '@/App';
 import { VoteLoader } from '@/features/vote/service';
 import {
@@ -48,7 +48,7 @@ export const router = createBrowserRouter([
           {
             path: 'feed',
             element: (
-              <Wrapper
+              <SuspenseBoundary
                 suspenseFallback={
                   <Skeleton>
                     <Skeleton.TextWrapper>
@@ -61,13 +61,14 @@ export const router = createBrowserRouter([
                 }
               >
                 <FeedHome />
-              </Wrapper>
+              </SuspenseBoundary>
             ),
           },
           {
             path: 'vote',
+            loader: ({ request }) => VoteLoader({ request, queryClient }),
             element: (
-              <Wrapper
+              <SuspenseBoundary
                 suspenseFallback={
                   <Skeleton>
                     <Skeleton.TextWrapper>
@@ -87,9 +88,8 @@ export const router = createBrowserRouter([
                 }
               >
                 <VoteHome />
-              </Wrapper>
+              </SuspenseBoundary>
             ),
-            loader: ({ request }) => VoteLoader({ request, queryClient }),
           },
         ],
       },
