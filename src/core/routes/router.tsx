@@ -1,5 +1,6 @@
 import { createBrowserRouter } from 'react-router-dom';
 import { queryClient } from '@/core/query';
+import { Wrapper, Skeleton } from '@/shared/components';
 import App from '@/App';
 import { VoteLoader } from '@/features/vote/service';
 import {
@@ -46,11 +47,48 @@ export const router = createBrowserRouter([
         children: [
           {
             path: 'feed',
-            element: <FeedHome />,
+            element: (
+              <Wrapper
+                suspenseFallback={
+                  <Skeleton>
+                    <Skeleton.TextWrapper>
+                      <Skeleton.Text />
+                    </Skeleton.TextWrapper>
+                    <Skeleton.FeedContainer>
+                      <Skeleton.Feed count={3} />
+                    </Skeleton.FeedContainer>
+                  </Skeleton>
+                }
+              >
+                <FeedHome />
+              </Wrapper>
+            ),
           },
           {
             path: 'vote',
-            element: <VoteHome />,
+            element: (
+              <Wrapper
+                suspenseFallback={
+                  <Skeleton>
+                    <Skeleton.TextWrapper>
+                      <Skeleton.Text />
+                    </Skeleton.TextWrapper>
+                    <Skeleton.InProGressVoteContainer>
+                      <Skeleton.InProgressVoteWrapper>
+                        <Skeleton.InProgressVote count={5} />
+                      </Skeleton.InProgressVoteWrapper>
+                    </Skeleton.InProGressVoteContainer>
+                    <Skeleton.VoteContainer>
+                      <Skeleton.VoteWrapper>
+                        <Skeleton.Vote count={3} />
+                      </Skeleton.VoteWrapper>
+                    </Skeleton.VoteContainer>
+                  </Skeleton>
+                }
+              >
+                <VoteHome />
+              </Wrapper>
+            ),
             loader: ({ request }) => VoteLoader({ request, queryClient }),
           },
         ],
