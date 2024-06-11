@@ -1,6 +1,7 @@
 import { Suspense } from 'react';
 import { CommonSpinner, ErrorElement, ErrorBoundary } from '@/shared/components';
 import type { ChildrenType } from '@/shared/types';
+import DeferredComponent from '../DeferredComponent';
 import { Center } from './style';
 
 interface WrapperProps extends ChildrenType {
@@ -15,9 +16,11 @@ const SuspenseBoundary = ({
     </Center>
   ),
 }: WrapperProps) => {
+  const fallback = <DeferredComponent>{suspenseFallback}</DeferredComponent>;
+
   return (
     <ErrorBoundary fallbackRender={(props) => <ErrorElement {...props} />}>
-      <Suspense fallback={suspenseFallback}>{children}</Suspense>
+      <Suspense fallback={fallback}>{children}</Suspense>
     </ErrorBoundary>
   );
 };
