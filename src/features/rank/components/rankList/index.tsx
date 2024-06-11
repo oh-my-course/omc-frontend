@@ -29,7 +29,7 @@ const RankList = ({ onInput }: RankSearchProp) => {
           기준
         </CommonText>
       </WrapperTitle>
-      <Grid>
+      <Grid column={2}>
         {data.itemRanking.slice(0, 10).map(({ rank, itemName }) => (
           <GridItemList key={rank}>
             <Item onClick={() => handleClick(itemName)}>
