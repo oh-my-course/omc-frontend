@@ -3,7 +3,7 @@ import {
   Box,
   Flex,
   Stack,
-  // VStack,
+  VStack,
   Skeleton as SkeletonElement,
   SkeletonCircle,
   SkeletonText,
@@ -11,24 +11,31 @@ import {
   SimpleGrid,
 } from '@chakra-ui/react';
 import type { ChildrenType } from '@/shared/types';
+import CommonDivider from '../Divider';
 import {
   FeedWrapper,
   TextWrapperPadding,
-  Container,
   InProgressVoteContainer,
   InProgressVoteItemWrapper,
   VoteContainerBackground,
   VoteItemWrapper,
+  GridItemList,
 } from './style';
-
-type MapFnType<T = unknown, U = ReactNode> = Parameters<typeof Array.from<T, U>>[1];
+import { Container } from '@/features/item/components/Item/style';
+import { Grid } from '@/features/rank/components/rankList/style';
+import { WordWrapper } from '@/features/search/components/searchList/style';
 
 interface CountProps {
   count: number;
 }
 
-interface CreateElementProps extends CountProps {
-  fn: MapFnType;
+interface CreateElementProps<T = unknown, U = ReactNode> extends CountProps {
+  fn: Parameters<typeof Array.from<T, U>>[1];
+}
+
+interface GridProps extends ChildrenType {
+  column: number;
+  rows: number;
 }
 
 const createElement = ({ count, fn }: CreateElementProps) => {
@@ -135,46 +142,51 @@ const TextWrapper = ({ children }: ChildrenType) => {
 const Text = () => {
   return (
     <Stack>
-      <SkeletonElement h="0.8rem" />
+      <SkeletonElement h="0.8rem" w="100%" />
     </Stack>
   );
 };
 
-// const Item = ({ data }) => {
-//   return (
-//     <>
-//       {data.map(() => {
-//         <>
-//           <Box>
-//             <SkeletonElement w="6.125rem" h="5.625rem" borderRadius="0.625rem" />
-//             <Stack mt="0.3rem" ml="0.5rem" spacing="0.3rem">
-//               <SkeletonElement w="2.5rem" h="0.8rem" />
-//               <SkeletonElement w="4.5rem" h="0.8rem" />
-//             </Stack>
-//           </Box>
-//         </>;
-//       })}
-//     </>
-//   );
-// };
+const GridWrapper = ({ children, column, rows }: GridProps) => {
+  return (
+    <Grid column={column} rows={rows}>
+      {children}
+    </Grid>
+  );
+};
 
-// const Bucket = ({ data }) => {
-//   return (
-//     <>
-//       {data.map(() => {
-//         <>
-//           <Box>
-//             <SkeletonElement w="6.125rem" h="5.625rem" borderRadius="0.625rem" />
-//             <VStack mt="0.3rem" spacing="0.3rem">
-//               <SkeletonElement w="2rem" h="0.8rem" />
-//               <SkeletonElement w="3rem" h="0.8rem" />
-//             </VStack>
-//           </Box>
-//         </>;
-//       })}
-//     </>
-//   );
-// };
+const GridItem = ({ count, children }: ChildrenType & CountProps) => {
+  const callFn = (index: number) => <GridItemList key={index}>{children}</GridItemList>;
+
+  const element = createElement({ count, fn: (_, index) => callFn(index) });
+
+  return <>{element}</>;
+};
+
+const TextResult = ({ count }: CountProps) => {
+  const callFn = (index: number) => (
+    <WordWrapper key={index}>
+      <SkeletonElement h="0.8rem" w="100%" />
+      <CommonDivider size="sm" />
+    </WordWrapper>
+  );
+
+  const element = createElement({ count, fn: (_, index) => callFn(index) });
+
+  return <>{element}</>;
+};
+
+const Item = () => {
+  return (
+    <Box>
+      <SkeletonElement w="6.125rem" h="5.625rem" borderRadius="0.625rem" />
+      <VStack mt="0.3rem" spacing="0.3rem">
+        <SkeletonElement w="2rem" h="0.8rem" />
+        <SkeletonElement w="3rem" h="0.8rem" />
+      </VStack>
+    </Box>
+  );
+};
 
 const Skeleton = Object.assign(Main, {
   FeedContainer,
@@ -187,6 +199,10 @@ const Skeleton = Object.assign(Main, {
   Vote,
   TextWrapper,
   Text,
+  GridWrapper,
+  GridItem,
+  TextResult,
+  Item,
 });
 
 export default Skeleton;

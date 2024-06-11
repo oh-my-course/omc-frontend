@@ -1,11 +1,5 @@
 import styled from '@emotion/styled';
 
-export const Container = styled.section`
-  display: flex;
-  flex-direction: column;
-  background-color: #e2e8f0;
-`;
-
 export const FeedWrapper = styled.div`
   display: flex;
   flex-direction: column;
@@ -36,4 +30,17 @@ export const VoteItemWrapper = styled.section`
   flex-direction: column;
   padding: 0 0.5rem;
   gap: 1rem;
+`;
+
+export const GridItemList = styled.li`
+  display: flex;
+  align-items: center;
+  gap: 0 0.3rem;
+`;
+
+export const WordWrapper = styled.a`
+  padding: 1rem 1.75rem;
+  display: flex;
+  align-items: center;
+  gap: 0 0.7rem;
 `;
