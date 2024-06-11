@@ -1,5 +1,5 @@
 import { useParams, useSearchParams } from 'react-router-dom';
-import { useQuery } from '@tanstack/react-query';
+import { useSuspenseQuery } from '@tanstack/react-query';
 import { CommonTabs } from '@/shared/components';
 import { Container } from '../FeedMemberContents/style';
 import FeedMemberList from '../FeedMemberList';
@@ -14,18 +14,10 @@ interface FeedMemberContentsProps {
 const FeedMemberContents = ({ isLikedFeedTab }: FeedMemberContentsProps) => {
   const [searchParams, setSearchParams] = useSearchParams();
   const { nickname } = useParams();
-  const hobby = useQuery({ ...hobbyQueryOption.all(), select: (data) => data.hobbies });
-
-  if (hobby.isPending) {
-    return;
-  }
-
-  if (hobby.isError) {
-    return;
-  }
+  const hobby = useSuspenseQuery({ ...hobbyQueryOption.all(), select: (data) => data.hobbies });
 
   const currentTabIndex = hobby.data
-    ?.map(({ name }) => name)
+    .map(({ name }) => name)
     .indexOf(searchParams.get(HOBBY) || hobby.data[0].name);
 
   return (
