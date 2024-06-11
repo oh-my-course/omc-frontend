@@ -2,6 +2,7 @@ import { createBrowserRouter } from 'react-router-dom';
 import { queryClient } from '@/core/query';
 import { SuspenseBoundary, Skeleton } from '@/shared/components';
 import App from '@/App';
+import { FeedLoader } from '@/features/feed/service';
 import { VoteLoader } from '@/features/vote/service';
 import {
   FeedCreate,
@@ -9,7 +10,7 @@ import {
   FeedHome,
   MemberHome,
   Home,
-  ItemList,
+  Item,
   ItemCreate,
   ItemReview,
   ItemDetail,
@@ -47,6 +48,7 @@ export const router = createBrowserRouter([
         children: [
           {
             path: 'feed',
+            loader: ({ request }) => FeedLoader({ request, queryClient }),
             element: (
               <SuspenseBoundary
                 suspenseFallback={
@@ -129,7 +131,7 @@ export const router = createBrowserRouter([
       },
       {
         path: 'item',
-        element: <ItemList />,
+        element: <Item />,
       },
       {
         path: 'item/create',

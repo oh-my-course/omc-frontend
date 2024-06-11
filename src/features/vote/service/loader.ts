@@ -1,7 +1,7 @@
 import { hobbyQueryOption } from '@/features/hobby/service';
-import { GetVotesRequest, VoteLoaderProp, voteQueryOption } from '@/features/vote/service';
+import { GetVotesRequest, LoaderProp, voteQueryOption } from '@/features/vote/service';
 
-const VoteLoader = ({ request, queryClient }: VoteLoaderProp) => {
+const VoteLoader = ({ request, queryClient }: LoaderProp) => {
   const { searchParams } = new URL(request.url);
   const [getHobby, getStatus, getSort] = [
     searchParams.get('hobby') || 'basketball',
