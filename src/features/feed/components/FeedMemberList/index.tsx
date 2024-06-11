@@ -1,6 +1,6 @@
 import { Fragment } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { useInfiniteQuery } from '@tanstack/react-query';
+import { useSuspenseInfiniteQuery } from '@tanstack/react-query';
 import { CommonDivider } from '@/shared/components';
 import { useIntersectionObserver } from '@/shared/hooks';
 import { FeedItem } from '..';
@@ -17,19 +17,11 @@ const FeedMemberList = ({ hobbyName, nickname, onlyNicknameLikeFeeds }: FeedMemb
   const navigate = useNavigate();
   const { pathname, search } = useLocation();
 
-  const feeds = useInfiniteQuery(
+  const feeds = useSuspenseInfiniteQuery(
     feedQueryOption.list({ hobbyName, nickname, onlyNicknameLikeFeeds })
   );
 
   const observedRef = useIntersectionObserver({ onObserve: feeds.fetchNextPage });
-
-  if (feeds.isPending) {
-    return;
-  }
-
-  if (feeds.isError) {
-    return;
-  }
 
   if (feeds.data.pages[0].feeds.length === 0) {
     return <NoResult>피드가 존재하지 않습니다.</NoResult>;

@@ -1,5 +1,5 @@
 import { useNavigate, useParams } from 'react-router-dom';
-import { useQuery } from '@tanstack/react-query';
+import { useSuspenseQuery } from '@tanstack/react-query';
 import { CommonMenu, CommonText, Header } from '@/shared/components';
 import { useDrawer } from '@/shared/hooks';
 import { Storage } from '@/shared/utils';
@@ -16,7 +16,7 @@ const InventoryDetail = () => {
   const { isOpen: isDeleteOpen, onOpen: onDeleteOpen, onClose: onDeleteClose } = useDrawer();
   const navigate = useNavigate();
   const isOwner = nickname === Storage.getLocalStoraged('userInfo').nickname;
-  const { data: inventoryDetailData } = useQuery({
+  const { data: inventoryDetailData } = useSuspenseQuery({
     ...inventoryQueryOption.detail({
       nickname: nickname,
       inventoryId: numberInventoryId,
@@ -30,7 +30,7 @@ const InventoryDetail = () => {
       <Container>
         <Item>
           <TitleWrapper>
-            <Item.Header>{inventoryDetailData?.hobby} 인벤토리</Item.Header>
+            <Item.Header>{inventoryDetailData.hobby} 인벤토리</Item.Header>
             {isOwner && (
               <CommonMenu
                 type="update"
@@ -42,10 +42,10 @@ const InventoryDetail = () => {
           </TitleWrapper>
           <ContentWrapper>
             <CommonText type="smallTitle">아이템 전체보기</CommonText>
-            <Item.CountInfo count={inventoryDetailData?.itemCount || 0} />
+            <Item.CountInfo count={inventoryDetailData.itemCount || 0} />
           </ContentWrapper>
           <Item.ImageContainer>
-            {inventoryDetailData?.inventoryItemInfos.map(({ image, name, price, id }) => (
+            {inventoryDetailData.inventoryItemInfos.map(({ image, name, price, id }) => (
               <Item.ImageBox key={id} onClick={() => navigate(`/item/${id}`)}>
                 <Item.Image src={image} />
                 <Item.Title name={name} />
@@ -58,8 +58,8 @@ const InventoryDetail = () => {
       <UpdateInventoryDetail
         isOpen={isOpen}
         onClose={onClose}
-        inventoryItemInfos={inventoryDetailData?.inventoryItemInfos || []}
-        inventoryHobby={inventoryDetailData?.hobby || ''}
+        inventoryItemInfos={inventoryDetailData.inventoryItemInfos || []}
+        inventoryHobby={inventoryDetailData.hobby || ''}
       />
       <DeleteInventoryDetail isOpen={isDeleteOpen} onClose={onDeleteClose} />
     </>

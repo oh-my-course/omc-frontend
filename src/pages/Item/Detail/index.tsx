@@ -1,12 +1,11 @@
 import { Fragment } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { useQuery, useInfiniteQuery } from '@tanstack/react-query';
+import { useSuspenseQuery, useSuspenseInfiniteQuery } from '@tanstack/react-query';
 import {
   CommonButton,
   CommonDivider,
   CommonIcon,
   CommonImage,
-  CommonSpinner,
   CommonText,
   Header,
 } from '@/shared/components';
@@ -35,7 +34,7 @@ const ItemDetail = () => {
 
   const isLogin = useAuthCheck();
 
-  const { data, isPending, isError } = useQuery({
+  const { data } = useSuspenseQuery({
     ...itemQueryOption.detail(Number(itemId)),
     initialData: {
       itemInfo: { id: 0, name: '', price: 0, image: '' },
@@ -48,11 +47,9 @@ const ItemDetail = () => {
 
   const {
     data: reviewInfo,
-    isPending: reviewPending,
-    isError: reviewError,
     hasNextPage,
     fetchNextPage,
-  } = useInfiniteQuery({
+  } = useSuspenseInfiniteQuery({
     ...reviewQueryOption.infiniteList({ itemId: Number(itemId), size: 2 }),
     select: (data) => {
       return {
@@ -71,18 +68,6 @@ const ItemDetail = () => {
   const handleItem = () => {
     itemTakeMutate([String(data.itemInfo.id)]);
   };
-
-  if (isPending || reviewPending) {
-    return (
-      <NoResult>
-        <CommonSpinner size="xl" />
-      </NoResult>
-    );
-  }
-
-  if (isError || reviewError) {
-    return <NoResult>Error...</NoResult>;
-  }
 
   return (
     <>

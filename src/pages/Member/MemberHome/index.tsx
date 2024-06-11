@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { useQuery } from '@tanstack/react-query';
+import { useSuspenseQuery } from '@tanstack/react-query';
 import {
   CommonAvatar,
   CommonBadge,
@@ -47,7 +47,7 @@ const MemberHome = () => {
   const { isOpen, onOpen, onClose } = useDrawer();
   const [selectedStatus, setSelectedStatus] = useState<'leave' | 'logout'>('logout');
 
-  const member = useQuery(memberQueryOption.detail(nickname!));
+  const member = useSuspenseQuery(memberQueryOption.detail(nickname!));
   const logout = useLogout();
   const leave = useLeave();
 
@@ -56,14 +56,6 @@ const MemberHome = () => {
       Storage.removeLocalStoraged(PROFILE_IMAGE_KEY);
     });
   }, []);
-
-  if (member.isPending) {
-    return;
-  }
-
-  if (member.isError) {
-    return;
-  }
 
   const currentProfileImage =
     Storage.getLocalStoraged(PROFILE_IMAGE_KEY) || member.data.memberProfile.profileImage;

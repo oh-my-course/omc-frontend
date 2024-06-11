@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query';
+import { useSuspenseQuery } from '@tanstack/react-query';
 import { CommonText, Header } from '@/shared/components';
 import { useUserInfo } from '@/shared/hooks';
 import { Container } from './style';
@@ -7,18 +7,10 @@ import { memberQueryOption } from '@/features/member/service';
 
 const MemberEdit = () => {
   const userInfo = useUserInfo();
-  const member = useQuery({
+  const member = useSuspenseQuery({
     ...memberQueryOption.detail(userInfo.nickname),
     select: (data) => data.memberProfile,
   });
-
-  if (member.isError) {
-    return;
-  }
-
-  if (member.isPending) {
-    return;
-  }
 
   return (
     <>

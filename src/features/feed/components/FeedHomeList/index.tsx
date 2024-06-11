@@ -15,7 +15,7 @@ interface FeedHomeListProps {
 const FeedHomeList = ({ hobbyName, sortCondition }: FeedHomeListProps) => {
   const navigate = useNavigate();
 
-  const feeds = useSuspenseInfiniteQuery(feedQueryOption.list({ hobbyName, sortCondition }));
+  const feeds = useSuspenseInfiniteQuery({ ...feedQueryOption.list({ hobbyName, sortCondition }) });
 
   const observedRef = useIntersectionObserver({ onObserve: feeds.fetchNextPage });
 

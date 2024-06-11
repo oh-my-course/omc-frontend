@@ -1,5 +1,5 @@
 import { ChangeEvent, Dispatch, SetStateAction } from 'react';
-import { useInfiniteQuery } from '@tanstack/react-query';
+import { useSuspenseInfiniteQuery } from '@tanstack/react-query';
 import { useIntersectionObserver } from '@/shared/hooks';
 import { SelectedItem } from '@/features/inventory/service';
 import { AddItem, Item } from '@/features/item/components';
@@ -12,7 +12,7 @@ interface VoteSelectItemProps {
 }
 
 const VoteSelectItem = ({ selectedItems, onChange, selectedHobby }: VoteSelectItemProps) => {
-  const { data: myItemsData, fetchNextPage } = useInfiniteQuery({
+  const { data: myItemsData, fetchNextPage } = useSuspenseInfiniteQuery({
     ...itemQueryOption.infinityList({
       hobbyName: selectedHobby,
       size: 12,
@@ -50,7 +50,7 @@ const VoteSelectItem = ({ selectedItems, onChange, selectedHobby }: VoteSelectIt
       <Item.Header>인벤토리 아이템 선택</Item.Header>
       <Item.CountInfo count={myItemsData?.summaries.length || 0} />
       <Item.ImageContainer>
-        {myItemsData?.summaries.map(({ itemInfo: { id, image, price, name } }) => (
+        {myItemsData.summaries.map(({ itemInfo: { id, image, price, name } }) => (
           <Item.ImageBox key={id} isBlur={isBlur(id)}>
             <Item.ImageInput id={id} onChange={(e) => handleChange(e, image)} />
             <Item.ImageInputLabel id={id}>

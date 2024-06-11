@@ -1,5 +1,5 @@
 import { ChangeEvent, Dispatch, SetStateAction } from 'react';
-import { useInfiniteQuery } from '@tanstack/react-query';
+import { useSuspenseInfiniteQuery } from '@tanstack/react-query';
 import { useIntersectionObserver } from '@/shared/hooks';
 import { SelectedItem, inventoryQueryOption } from '../../service';
 import { AddItem, Item } from '@/features/item/components';
@@ -17,7 +17,7 @@ const InventorySelectItem = ({
   selectedHobby,
   inventoryId,
 }: InventorySelectItemProps) => {
-  const { data: myItemsData, fetchNextPage } = useInfiniteQuery({
+  const { data: myItemsData, fetchNextPage } = useSuspenseInfiniteQuery({
     ...inventoryQueryOption.myItems({
       hobbyName: selectedHobby,
       inventoryId: Number(inventoryId),
@@ -45,7 +45,7 @@ const InventorySelectItem = ({
         <Item.Header>인벤토리 아이템 선택</Item.Header>
         <Item.CountInfo count={myItemsData?.length || 0} />
         <Item.ImageContainer>
-          {myItemsData?.map(({ itemInfo: { id, image, price, name }, isSelected }) => (
+          {myItemsData.map(({ itemInfo: { id, image, price, name }, isSelected }) => (
             <Item.ImageBox key={id} isBlur={isBlur(id)}>
               <Item.ImageInput
                 id={id}

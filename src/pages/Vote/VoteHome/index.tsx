@@ -13,9 +13,7 @@ const VoteHome = () => {
 
   const { data: hobbyData } = useHobby();
 
-  const currentTabIndex = hobbyData?.hobbies
-    .map(({ name }) => name)
-    .indexOf(getHobby || hobbyData.hobbies[0].name);
+  const currentTabIndex = hobbyData?.hobbies.map(({ name }) => name).indexOf(getHobby);
 
   return (
     <Container>
@@ -26,18 +24,16 @@ const VoteHome = () => {
         onClick={(value) => {
           setSearchParams({ hobby: value });
         }}
-        tabsData={
-          hobbyData?.hobbies.map(({ name, value }) => ({
-            value: name,
-            label: value,
-            content: (
-              <>
-                <VoteInProgress />
-                <Votes />
-              </>
-            ),
-          })) || []
-        }
+        tabsData={hobbyData.hobbies.map(({ name, value }) => ({
+          value: name,
+          label: value,
+          content: (
+            <>
+              <VoteInProgress />
+              <Votes />
+            </>
+          ),
+        }))}
       />
     </Container>
   );

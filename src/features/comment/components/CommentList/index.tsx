@@ -1,5 +1,5 @@
 import { Fragment } from 'react';
-import { useInfiniteQuery } from '@tanstack/react-query';
+import { useSuspenseInfiniteQuery } from '@tanstack/react-query';
 import { CommonDivider } from '@/shared/components';
 import { useIntersectionObserver } from '@/shared/hooks';
 import { NoResult, ObservedBox } from './style';
@@ -29,17 +29,9 @@ const CommentList = ({
   setIsUpdating,
   setUpdatingCommentId,
 }: CommentListProps) => {
-  const comment = useInfiniteQuery(commentQueryQption.infiniteList({ feedId, size: 3 }));
+  const comment = useSuspenseInfiniteQuery(commentQueryQption.infiniteList({ feedId, size: 3 }));
 
   const observedRef = useIntersectionObserver({ onObserve: comment.fetchNextPage });
-
-  if (comment.isPending) {
-    return;
-  }
-
-  if (comment.isError) {
-    return;
-  }
 
   if (comment.data.pages[0].totalCount === 0) {
     return <NoResult>댓글이 존재하지 않습니다.</NoResult>;

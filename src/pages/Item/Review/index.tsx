@@ -1,14 +1,13 @@
 import { useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { useParams } from 'react-router-dom';
-import { useQuery } from '@tanstack/react-query';
+import { useSuspenseQuery } from '@tanstack/react-query';
 import {
   CommonButton,
   CommonDivider,
   CommonIcon,
   CommonImage,
   CommonSlider,
-  CommonSpinner,
   CommonText,
   CommonTextarea,
   Header,
@@ -26,7 +25,6 @@ import {
   Form,
   FormWrapper,
   ItemBoxColumn,
-  NoResult,
 } from './style';
 import { itemQueryOption } from '@/features/item/service';
 import { usePostReview } from '@/features/review/hooks';
@@ -46,7 +44,9 @@ const ItemReview = () => {
 
   const [value, setValue] = useState<number>(0);
 
-  const { data, isPending, isError } = useQuery({ ...itemQueryOption.detail(Number(itemId)) });
+  const { data } = useSuspenseQuery({
+    ...itemQueryOption.detail(Number(itemId)),
+  });
 
   const userInfo = useUserInfo();
 
@@ -56,18 +56,6 @@ const ItemReview = () => {
     reviewMutate({ itemId: Number(itemId), content: data.review, rating: value });
     reset();
   };
-
-  if (isPending) {
-    return (
-      <NoResult>
-        <CommonSpinner size="xl" />
-      </NoResult>
-    );
-  }
-
-  if (isError) {
-    return <NoResult>Error...</NoResult>;
-  }
 
   return (
     <>

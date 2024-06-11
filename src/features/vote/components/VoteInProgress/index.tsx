@@ -36,7 +36,7 @@ const VoteInProgress = () => {
             <CommonText type="normalInfo">진행중인 투표</CommonText>
           </TitleWrapper>
           <ContentsWrapper>
-            {votesInProgressData?.map(({ cursorId, item1Info, item2Info, voteInfo }) => (
+            {votesInProgressData.map(({ cursorId, item1Info, item2Info, voteInfo }) => (
               <VoteInProgressItem
                 key={cursorId}
                 cursorId={cursorId}

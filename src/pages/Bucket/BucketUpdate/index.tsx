@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { useParams, useSearchParams } from 'react-router-dom';
-import { useQuery } from '@tanstack/react-query';
+import { useSuspenseQuery } from '@tanstack/react-query';
 import { CommonButton, CommonDrawer, CommonInput, CommonText, Header } from '@/shared/components';
 import { useDrawer, useUserInfo, useValidateForm } from '@/shared/hooks';
 import { Container, ContentsPanel, ContentsWrapper, Form } from './style';
@@ -35,7 +35,7 @@ const BucketUpdate = () => {
     setValue,
   } = useForm<BucketInfo>({ mode: 'onBlur' });
 
-  const bucket = useQuery({
+  const bucket = useSuspenseQuery({
     ...bucketQueryOption.detail({ nickname: userInfo?.nickname || '', bucketId: Number(bucketId) }),
     select: (data) => {
       const items = data.itemInfos.reduce<SelectedItem[]>((acc, cur) => {
@@ -66,7 +66,9 @@ const BucketUpdate = () => {
     }
   }, [bucket.data, bucket.isSuccess, setValue]);
 
-  const items = useQuery(itemQueryOption.myItems({ hobbyName: searchParams.get('hobby')! }));
+  const items = useSuspenseQuery(
+    itemQueryOption.myItems({ hobbyName: searchParams.get('hobby')! })
+  );
 
   const { isOpen, onOpen, onClose } = useDrawer();
 
@@ -118,23 +120,19 @@ const BucketUpdate = () => {
         <CommonDrawer
           isOpen={isOpen}
           onClose={() => {
-            if (bucket.isSuccess) {
-              setSelectedItems(bucket.data.items);
-              onClose();
-            }
+            setSelectedItems(bucket.data.items);
+            onClose();
           }}
           onClickFooterButton={onClose}
           isFull
           footerButtonText="선택 완료"
           isDisabled={!selectedItems.length}
         >
-          {items.isSuccess && (
-            <BucketUpdateItem
-              items={items.data}
-              onClick={setSelectedItems}
-              selectedItems={selectedItemIds}
-            />
-          )}
+          <BucketUpdateItem
+            items={items.data}
+            onClick={setSelectedItems}
+            selectedItems={selectedItemIds}
+          />
         </CommonDrawer>
       </Container>
     </>

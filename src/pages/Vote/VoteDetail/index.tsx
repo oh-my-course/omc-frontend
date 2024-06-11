@@ -1,5 +1,5 @@
 import { useParams } from 'react-router-dom';
-import { useQuery } from '@tanstack/react-query';
+import { useSuspenseQuery } from '@tanstack/react-query';
 import { CommonDrawer, CommonIconButton, CommonText, DateText, Header } from '@/shared/components';
 import { useDrawer } from '@/shared/hooks';
 import { Body, Content, Footer, Span, Title } from './style';
@@ -10,7 +10,7 @@ import { voteQueryOption } from '@/features/vote/service';
 const VoteDetail = () => {
   const { voteId } = useParams() as { voteId: string };
   const numberVoteId = Number(voteId);
-  const { data: voteDetailData } = useQuery({ ...voteQueryOption.detail(numberVoteId) });
+  const { data: voteDetailData } = useSuspenseQuery({ ...voteQueryOption.detail(numberVoteId) });
   const { mutate: DeleteVoteMutate } = useDeleteVote();
   const { isOpen, onOpen, onClose } = useDrawer();
 
@@ -20,32 +20,32 @@ const VoteDetail = () => {
       <Body>
         <Title>
           <CommonText type="normalTitle" noOfLines={0}>
-            {voteDetailData?.voteInfo.isVoting ? '진행중인 투표' : '종료된 투표'}
+            {voteDetailData.voteInfo.isVoting ? '진행중인 투표' : '종료된 투표'}
           </CommonText>
-          {voteDetailData?.isOwner && <CommonIconButton type="delete" onClick={onOpen} />}
+          {voteDetailData.isOwner && <CommonIconButton type="delete" onClick={onOpen} />}
         </Title>
         <CommonText type="smallInfo" noOfLines={0}>
-          {voteDetailData?.voteInfo.content}
+          {voteDetailData.voteInfo.content}
         </CommonText>
         <Content>
           <VoteOptionItem
             voteDetailData={voteDetailData!}
-            itemInfo={voteDetailData?.item1Info}
-            votes={voteDetailData?.voteInfo.item1Votes}
+            itemInfo={voteDetailData.item1Info}
+            votes={voteDetailData.voteInfo.item1Votes}
             voteId={numberVoteId}
           />
           <Span>VS</Span>
           <VoteOptionItem
-            voteDetailData={voteDetailData!}
-            itemInfo={voteDetailData?.item2Info}
-            votes={voteDetailData?.voteInfo.item2Votes}
+            voteDetailData={voteDetailData}
+            itemInfo={voteDetailData.item2Info}
+            votes={voteDetailData.voteInfo.item2Votes}
             voteId={numberVoteId}
           />
         </Content>
         <Footer>
-          <DateText createdDate={voteDetailData?.voteInfo.startTime || ''} />
+          <DateText createdDate={voteDetailData.voteInfo.startTime || ''} />
           <CommonText type="smallInfo" noOfLines={0}>
-            {voteDetailData?.voteInfo.participants}명 참여
+            {voteDetailData.voteInfo.participants}명 참여
           </CommonText>
         </Footer>
       </Body>

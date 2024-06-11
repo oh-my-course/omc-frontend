@@ -1,17 +1,19 @@
-import { useSearchParams } from 'react-router-dom';
-import { useSuspenseQuery } from '@tanstack/react-query';
+import { useLoaderData, useSearchParams } from 'react-router-dom';
 import { CommonDivider, CommonSelect, CommonTabs } from '@/shared/components';
 import { Container, SelectWrapper } from './style';
 import { FeedHomeList } from '@/features/feed/components';
-import { hobbyQueryOption } from '@/features/hobby/service';
+import { useHobby } from '@/features/hobby/hooks';
+import { ParamsInfo } from '@/features/vote/service';
 
 const FeedHome = () => {
-  const [searchParams, setSearchParams] = useSearchParams();
-  const hobbies = useSuspenseQuery({ ...hobbyQueryOption.all(), select: ({ hobbies }) => hobbies });
+  const {
+    paramsInfo: { getHobby, getSort },
+  } = useLoaderData() as ParamsInfo;
+  const [, setSearchParams] = useSearchParams();
 
-  const currentTabIndex = hobbies.data
-    .map(({ name }) => name)
-    .indexOf(searchParams.get('hobby') || hobbies.data[0].name);
+  const { data: hobbyData } = useHobby();
+
+  const currentTabIndex = hobbyData.hobbies.map(({ name }) => name).indexOf(getHobby);
 
   return (
     <CommonTabs
@@ -21,29 +23,26 @@ const FeedHome = () => {
       onClick={(value) => {
         setSearchParams({ hobby: value });
       }}
-      tabsData={hobbies.data.map(({ name, value }) => ({
+      tabsData={hobbyData.hobbies.map(({ name, value }) => ({
         value: name,
         label: value,
         content: (
           <Container>
             <SelectWrapper>
               <CommonSelect
-                selectedValue={searchParams.get('sort') || 'recent'}
+                selectedValue={getSort}
                 onChange={(e) => {
                   const sort = e.target.value;
 
                   setSearchParams({
-                    hobby: searchParams.get('hobby') || '',
+                    hobby: getHobby,
                     sort: sort,
                   });
                 }}
               />
             </SelectWrapper>
             <CommonDivider size="sm" />
-            <FeedHomeList
-              hobbyName={searchParams.get('hobby') || hobbies.data[0].name}
-              sortCondition={searchParams.get('sort') || 'recent'}
-            />
+            <FeedHomeList hobbyName={getHobby} sortCondition={getSort!} />
           </Container>
         ),
       }))}

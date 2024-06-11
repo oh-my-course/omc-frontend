@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
-import { useQuery } from '@tanstack/react-query';
+import { useSuspenseQuery } from '@tanstack/react-query';
 import {
   CommonButton,
   CommonDivider,
@@ -40,9 +40,9 @@ const FeedDetail = () => {
   const { state: path } = useLocation();
   const deleteFeed = useDeleteFeed(path);
 
-  const feedDetail = useQuery(feedQueryOption.detail(feedIdNumber));
+  const feedDetail = useSuspenseQuery(feedQueryOption.detail(feedIdNumber));
 
-  const comment = useQuery(commentQueryQption.list({ feedId: feedIdNumber }));
+  const comment = useSuspenseQuery(commentQueryQption.list({ feedId: feedIdNumber }));
   const addComment = useAddComment(feedIdNumber, userInfo?.nickname || '');
   const updateComment = useUpdateComment(feedIdNumber);
   const deleteComment = useDeleteComment();
@@ -66,14 +66,6 @@ const FeedDetail = () => {
     setIsUpdating(false);
     reset();
   };
-
-  if (feedDetail.isPending) {
-    return;
-  }
-
-  if (feedDetail.isError) {
-    return;
-  }
 
   const isOwnFeed = feedDetail.data.memberInfo.nickName === userInfo?.nickname;
 

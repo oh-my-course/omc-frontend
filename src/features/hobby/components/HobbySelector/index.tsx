@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query';
+import { useSuspenseQuery } from '@tanstack/react-query';
 import { CommonRadio } from '@/shared/components';
 import { hobbyQueryOption } from '../../service';
 import { Container } from './style';
@@ -22,7 +22,7 @@ const HobbySelector = ({
   isReadOnly,
   setSelectedItems,
 }: HobbyRadioProps) => {
-  const { data, isPending, isError } = useQuery({
+  const { data } = useSuspenseQuery({
     ...hobbyQueryOption.all(),
     select: (data) =>
       data.hobbies.reduce<Record<string, string>>(
@@ -30,14 +30,6 @@ const HobbySelector = ({
         {}
       ),
   });
-
-  if (isPending) {
-    return;
-  }
-
-  if (isError) {
-    return;
-  }
 
   const hangulHobby = Object.keys(data);
 
