@@ -12,7 +12,7 @@ export const VoteDetail = lazy(() => import('./Vote/VoteDetail'));
 export const SearchHome = lazy(() => import('./Search/SearchHome'));
 export const SearchMain = lazy(() => import('./Search/SearchMain'));
 export const SearchResult = lazy(() => import('./Search/SearchResult'));
-export const ItemList = lazy(() => import('./Item/List'));
+export const Item = lazy(() => import('./Item/List'));
 export const ItemCreate = lazy(() => import('./Item/Create'));
 export const ItemDetail = lazy(() => import('./Item/Detail'));
 export const ItemReview = lazy(() => import('./Item/Review'));
