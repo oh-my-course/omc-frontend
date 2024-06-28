@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import { useInfiniteQuery } from '@tanstack/react-query';
+import { useSuspenseInfiniteQuery } from '@tanstack/react-query';
 import { useIntersectionObserver } from '@/shared/hooks';
 import { bucketQueryOption } from '../../service';
 import { Container, NoResult } from './style';
@@ -13,17 +13,9 @@ interface BucketListProps {
 const BucketList = ({ nickname, hobby }: BucketListProps) => {
   const navigate = useNavigate();
 
-  const bucket = useInfiniteQuery(bucketQueryOption.list({ nickname, hobby, size: 18 }));
+  const bucket = useSuspenseInfiniteQuery(bucketQueryOption.list({ nickname, hobby, size: 18 }));
 
   const observedRef = useIntersectionObserver({ onObserve: bucket.fetchNextPage });
-
-  if (bucket.isPending) {
-    return;
-  }
-
-  if (bucket.isError) {
-    return;
-  }
 
   if (bucket.data.pages[0].buckets.length === 0) {
     return <NoResult>버킷이 없습니다.</NoResult>;

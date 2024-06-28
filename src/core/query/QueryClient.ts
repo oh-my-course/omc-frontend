@@ -5,9 +5,11 @@ const queryClient = new QueryClient({
     queries: {
       retry: 0,
       refetchOnWindowFocus: false,
+      throwOnError: true,
     },
     mutations: {
       retry: 0,
+      throwOnError: true,
     },
   },
 });

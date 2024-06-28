@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import { useInfiniteQuery } from '@tanstack/react-query';
+import { useSuspenseInfiniteQuery } from '@tanstack/react-query';
 import { CommonButton, CommonDivider, CommonIcon, CommonText } from '@/shared/components';
 import { useIntersectionObserver } from '@/shared/hooks';
 import { AddBucketButtonBox, AddBucketWrapper } from './style';
@@ -30,21 +30,15 @@ const reduceImgUrl = (itemImages: ItemImages[]) => {
 const FeedSelectBucket = ({ hobby, nickname, selectedBucket, onClick }: FeedSelectBucketProps) => {
   const navigate = useNavigate();
 
-  const bucketList = useInfiniteQuery(bucketQueryOption.list({ hobby, nickname, size: 18 }));
+  const bucketList = useSuspenseInfiniteQuery(
+    bucketQueryOption.list({ hobby, nickname, size: 18 })
+  );
 
   const observedRef = useIntersectionObserver({ onObserve: bucketList.fetchNextPage });
 
   const isBlur = (id: number) => {
     return selectedBucket === id;
   };
-
-  if (bucketList.isPending) {
-    return;
-  }
-
-  if (bucketList.isError) {
-    return;
-  }
 
   if (bucketList.data.pages[0].buckets.length === 0) {
     return (

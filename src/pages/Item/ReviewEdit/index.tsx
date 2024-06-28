@@ -1,14 +1,13 @@
 import { useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { useParams } from 'react-router-dom';
-import { useQuery } from '@tanstack/react-query';
+import { useSuspenseQuery } from '@tanstack/react-query';
 import {
   CommonButton,
   CommonDivider,
   CommonIcon,
   CommonImage,
   CommonSlider,
-  CommonSpinner,
   CommonText,
   CommonTextarea,
   Header,
@@ -26,7 +25,6 @@ import {
   Form,
   FormWrapper,
   ItemBoxColumn,
-  NoResult,
 } from './style';
 import { itemQueryOption } from '@/features/item/service';
 import { useEditReview } from '@/features/review/hooks';
@@ -39,13 +37,11 @@ interface FormProps {
 const ItemReviewEdit = () => {
   const { itemId, reviewId } = useParams();
 
-  const { data, isPending, isError } = useQuery({ ...itemQueryOption.detail(Number(itemId)) });
+  const { data } = useSuspenseQuery({
+    ...itemQueryOption.detail(Number(itemId)),
+  });
 
-  const {
-    data: reviewInfo,
-    isPending: reviewPending,
-    isError: reviewError,
-  } = useQuery({
+  const { data: reviewInfo } = useSuspenseQuery({
     ...reviewQueryOption.detail({ itemId: Number(itemId), reviewId: Number(reviewId) }),
   });
 
@@ -85,18 +81,6 @@ const ItemReviewEdit = () => {
       reset();
     };
   }, [reviewInfo, reset]);
-
-  if (isPending || reviewPending) {
-    return (
-      <NoResult>
-        <CommonSpinner size="xl" />
-      </NoResult>
-    );
-  }
-
-  if (isError || reviewError) {
-    return <NoResult>Error...</NoResult>;
-  }
 
   return (
     <>

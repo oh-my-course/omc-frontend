@@ -1,5 +1,4 @@
-import { Suspense, memo, useState } from 'react';
-import { ErrorBoundary } from 'react-error-boundary';
+import { memo, useState } from 'react';
 import { Outlet } from 'react-router-dom';
 import { Footer } from '@/shared/components';
 import { useGetSearchParams } from '@/shared/hooks';
@@ -29,11 +28,7 @@ const SearchHome = () => {
           <HeaderBox />
           <SearchForm keyword={keyword} onInput={onInput} />
           <SearchContainer>
-            <ErrorBoundary fallback={<>Error처리</>}>
-              <Suspense fallback={<>Loading...</>}>
-                <MemoOutlet context={{ keyword: lateKeyword, onInput }} />
-              </Suspense>
-            </ErrorBoundary>
+            <MemoOutlet context={{ keyword: lateKeyword, onInput }} />
           </SearchContainer>
         </Wrapper>
       </Container>

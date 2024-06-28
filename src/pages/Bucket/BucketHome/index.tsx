@@ -1,5 +1,5 @@
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
-import { useQuery } from '@tanstack/react-query';
+import { useSuspenseQuery } from '@tanstack/react-query';
 import {
   CommonDivider,
   CommonIconButton,
@@ -17,15 +17,7 @@ const BucketHome = () => {
   const navigate = useNavigate();
   const userInfo = useUserInfo();
   const [searchParams, setSearchParams] = useSearchParams();
-  const hobby = useQuery({ ...hobbyQueryOption.all(), select: (data) => data.hobbies });
-
-  if (hobby.isPending) {
-    return;
-  }
-
-  if (hobby.isError) {
-    return;
-  }
+  const hobby = useSuspenseQuery({ ...hobbyQueryOption.all(), select: (data) => data.hobbies });
 
   const currentTabIndex = hobby.data
     ?.map(({ name }) => name)

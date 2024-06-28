@@ -1,6 +1,6 @@
-import { Suspense, useState } from 'react';
+import { useState } from 'react';
 import { useOutletContext } from 'react-router-dom';
-import { CommonSkeleton, CommonTabs } from '@/shared/components';
+import { CommonTabs, Skeleton, SuspenseBoundary } from '@/shared/components';
 import { SearchWrapper, SearchBox } from './style';
 import { SearchItemList, SearchVoteList } from '@/features/search/components';
 import { SearchListProps } from '@/pages/Search/SearchMain';
@@ -35,9 +35,22 @@ const SearchResult = () => {
             content: (
               <SearchWrapper>
                 <SearchBox>
-                  <Suspense fallback={<CommonSkeleton type="text" />}>
+                  <SuspenseBoundary
+                    suspenseFallback={
+                      <Skeleton>
+                        <Skeleton.TextWrapper>
+                          <Skeleton.Text />
+                        </Skeleton.TextWrapper>
+                        <Skeleton.GridWrapper column={3} rows={4}>
+                          <Skeleton.GridItem count={11}>
+                            <Skeleton.Item />
+                          </Skeleton.GridItem>
+                        </Skeleton.GridWrapper>
+                      </Skeleton>
+                    }
+                  >
                     <SearchItemList keyword={keyword} />
-                  </Suspense>
+                  </SuspenseBoundary>
                 </SearchBox>
               </SearchWrapper>
             ),
@@ -48,9 +61,22 @@ const SearchResult = () => {
             content: (
               <SearchWrapper>
                 <SearchBox>
-                  <Suspense fallback={<CommonSkeleton type="text" />}>
+                  <SuspenseBoundary
+                    suspenseFallback={
+                      <Skeleton>
+                        <Skeleton.TextWrapper>
+                          <Skeleton.Text />
+                        </Skeleton.TextWrapper>
+                        <Skeleton.VoteContainer>
+                          <Skeleton.VoteWrapper>
+                            <Skeleton.Vote count={3} />
+                          </Skeleton.VoteWrapper>
+                        </Skeleton.VoteContainer>
+                      </Skeleton>
+                    }
+                  >
                     <SearchVoteList keyword={keyword} />
-                  </Suspense>
+                  </SuspenseBoundary>
                 </SearchBox>
               </SearchWrapper>
             ),

@@ -1,5 +1,5 @@
 import { useNavigate, useParams } from 'react-router-dom';
-import { useQuery } from '@tanstack/react-query';
+import { useSuspenseQuery } from '@tanstack/react-query';
 import { CommonIconButton, Header } from '@/shared/components';
 import { useAuthNavigate } from '@/shared/hooks';
 import { Storage } from '@/shared/utils';
@@ -11,7 +11,7 @@ const InventoryHome = () => {
   const authNavigate = useAuthNavigate();
   const navigate = useNavigate();
   const { nickname } = useParams();
-  const { data: inventoryData } = useQuery({
+  const { data: inventoryData } = useSuspenseQuery({
     ...inventoryQueryOption.list(nickname!),
     staleTime: Infinity,
   });
@@ -23,9 +23,9 @@ const InventoryHome = () => {
       <Container>
         <Item>
           <Item.Header>인벤토리</Item.Header>
-          <Item.CountInfo count={inventoryData?.inventoryInfos.length || 0} />
+          <Item.CountInfo count={inventoryData.inventoryInfos.length || 0} />
           <Item.ImageContainer>
-            {inventoryData?.inventoryInfos.map(
+            {inventoryData.inventoryInfos.map(
               ({ inventoryId, itemImages, hobby, inventoryTotalPrice }, index) => (
                 <Item.ImageBox
                   key={index}

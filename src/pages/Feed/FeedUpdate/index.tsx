@@ -1,6 +1,6 @@
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { useParams } from 'react-router-dom';
-import { useQuery } from '@tanstack/react-query';
+import { useSuspenseQuery } from '@tanstack/react-query';
 import {
   CommonButton,
   CommonText,
@@ -26,7 +26,7 @@ interface FeedContent {
 
 const FeedUpdate = () => {
   const { feedId } = useParams();
-  const feedDetail = useQuery({
+  const feedDetail = useSuspenseQuery({
     ...feedQueryOption.detail(Number(feedId)),
     select: (data) => {
       const hobby = data.feedInfo.hobby;
@@ -49,14 +49,6 @@ const FeedUpdate = () => {
   const onSubmit: SubmitHandler<FeedContent> = ({ content }) => {
     updateFeed.mutate({ feedId: Number(feedId), content });
   };
-
-  if (feedDetail.isPending) {
-    return;
-  }
-
-  if (feedDetail.isError) {
-    return;
-  }
 
   return (
     <>

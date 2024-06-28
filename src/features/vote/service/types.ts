@@ -41,7 +41,7 @@ export interface GetVoteDetailResponse {
   selectedItemId: number;
 }
 
-export interface VoteLoaderProp {
+export interface LoaderProp {
   request: LoaderFunctionArgs['request'];
   queryClient: QueryClient;
 }

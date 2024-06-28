@@ -1,5 +1,5 @@
 import { useNavigate, useParams } from 'react-router-dom';
-import { useQuery } from '@tanstack/react-query';
+import { useSuspenseQuery } from '@tanstack/react-query';
 import { CommonDrawer, CommonMenu, Header } from '@/shared/components';
 import { useDrawer, useUserInfo } from '@/shared/hooks';
 import { Container, TitlePanel, TitleWrapper } from './style';
@@ -13,11 +13,11 @@ const BucketDetail = () => {
   const navigate = useNavigate();
   const userInfo = useUserInfo();
 
-  const buckDetail = useQuery(
+  const buckDetail = useSuspenseQuery(
     bucketQueryOption.detail({ nickname: nickname!, bucketId: Number(bucketId) })
   );
 
-  const hobby = useQuery({
+  const hobby = useSuspenseQuery({
     ...hobbyQueryOption.all(),
     select: (data) =>
       data.hobbies.reduce<Record<string, string>>(
@@ -31,13 +31,13 @@ const BucketDetail = () => {
 
   return (
     <>
-      <Header type="back" title={buckDetail.data?.name} />
+      <Header type="back" title={buckDetail.data.name} />
       <Container>
         <Item>
           <TitleWrapper>
             <TitlePanel>
               <Item.Header>아이템 전체보기</Item.Header>
-              <Item.CountInfo count={buckDetail.data?.itemInfos.length || 0} />
+              <Item.CountInfo count={buckDetail.data.itemInfos.length || 0} />
             </TitlePanel>
             {userInfo?.nickname === nickname && (
               <CommonMenu
@@ -45,26 +45,21 @@ const BucketDetail = () => {
                 iconSize="0.35rem"
                 onDelete={onOpen}
                 onUpdate={() => {
-                  if (hobby.isSuccess && buckDetail.isSuccess) {
-                    navigate(
-                      `/bucket/${bucketId}/edit?hobby=${hobby.data[buckDetail.data?.hobby]}`
-                    );
-                  }
+                  navigate(`/bucket/${bucketId}/edit?hobby=${hobby.data[buckDetail.data?.hobby]}`);
                 }}
               />
             )}
           </TitleWrapper>
-          {buckDetail.isSuccess && (
-            <Item.ImageContainer>
-              {buckDetail.data.itemInfos.map(({ id, image, name, price }) => (
-                <Item.ImageBox key={id} onClick={() => navigate(`/item/${id}`)}>
-                  <Item.Image src={image} />
-                  <Item.Title name={name} />
-                  <Item.Price price={price} />
-                </Item.ImageBox>
-              ))}
-            </Item.ImageContainer>
-          )}
+
+          <Item.ImageContainer>
+            {buckDetail.data.itemInfos.map(({ id, image, name, price }) => (
+              <Item.ImageBox key={id} onClick={() => navigate(`/item/${id}`)}>
+                <Item.Image src={image} />
+                <Item.Title name={name} />
+                <Item.Price price={price} />
+              </Item.ImageBox>
+            ))}
+          </Item.ImageContainer>
         </Item>
       </Container>
       <CommonDrawer
@@ -74,13 +69,9 @@ const BucketDetail = () => {
         isCloseButton={false}
         onClickFooterButton={() => {
           deleteBucket.mutate(Number(bucketId));
-          if (hobby.isSuccess && buckDetail.isSuccess) {
-            navigate(`/member/${nickname}/bucket?hobby=${hobby.data[buckDetail.data?.hobby]}`, {
-              replace: true,
-            });
-          } else {
-            navigate(`/member/${nickname}/bucket`, { replace: true });
-          }
+          navigate(`/member/${nickname}/bucket?hobby=${hobby.data[buckDetail.data?.hobby]}`, {
+            replace: true,
+          });
         }}
       >
         정말로 버킷을 삭제하시겠습니까?

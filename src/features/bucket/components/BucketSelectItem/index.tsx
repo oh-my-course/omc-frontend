@@ -1,4 +1,4 @@
-import { useInfiniteQuery } from '@tanstack/react-query';
+import { useSuspenseInfiniteQuery } from '@tanstack/react-query';
 import { useIntersectionObserver } from '@/shared/hooks';
 import { AddItem, Item } from '@/features/item/components';
 import { itemQueryOption } from '@/features/item/service';
@@ -15,7 +15,7 @@ interface BucketSelectItemPorps {
 }
 
 const BucketSelectItem = ({ hobby, onClick, selectedItems }: BucketSelectItemPorps) => {
-  const items = useInfiniteQuery({
+  const items = useSuspenseInfiniteQuery({
     ...itemQueryOption.infinityList({ hobbyName: hobby, size: 12 }),
     select: ({ pages }) => ({
       pages,
@@ -38,14 +38,6 @@ const BucketSelectItem = ({ hobby, onClick, selectedItems }: BucketSelectItemPor
   const isBlur = (id: number) => {
     return selectedItems.some((item) => item.id === id);
   };
-
-  if (items.isPending) {
-    return;
-  }
-
-  if (items.isError) {
-    return;
-  }
 
   return (
     <>

@@ -2,8 +2,8 @@ import { useNavigate } from 'react-router-dom';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { CommonDivider, CommonIcon, CommonText } from '@/shared/components';
 import { WordWrapper, NoResult } from './style';
+import type { SearchListProps } from '@/pages/Search/SearchMain';
 import { searchQueryOption, searchLocalStorage } from '@/features/search/service';
-import { SearchListProps } from '@/pages/Search/SearchMain';
 
 const SearchList = ({ keyword, onInput }: SearchListProps) => {
   const navigate = useNavigate();
